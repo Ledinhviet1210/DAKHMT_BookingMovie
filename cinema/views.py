@@ -15,7 +15,6 @@ from .forms import RegisterForm, LoginForm
 from .forms import RegisterForm
 import random
 import string
-from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from datetime import timedelta
@@ -27,6 +26,8 @@ from collections import OrderedDict
 from django.db.models import Sum, Count
 from .app_views.manage_views import *
 from .app_views.staff_views import *
+from .app_views.ticket_views import *
+
 
 def home(request):
     now_showing_movies = Movie.objects.filter(status="now_showing").order_by(
@@ -399,34 +400,6 @@ def payment_success(request, booking_id):
     return render(request, "cinema/payment_success.html", {"booking": booking})
 
 
-@login_required
-def my_tickets(request):
-
-    bookings = (
-        Booking.objects.filter(user=request.user, status="paid")
-        .select_related(
-            "showtime",
-            "showtime__movie",
-            "showtime__room",
-            "showtime__room__cinema",
-        )
-        .prefetch_related("booking_seats__seat")
-        .order_by("-created_at")
-    )
-
-    now = timezone.now()
-
-    for booking in bookings:
-
-        if booking.showtime.start_time > now:
-            booking.ticket_status = "upcoming"
-
-        else:
-            booking.ticket_status = "watched"
-
-    return render(request, "cinema/my_tickets.html", {"bookings": bookings})
-
-
 def profile(request):
     return render(request, "cinema/profile.html")
 
@@ -780,19 +753,7 @@ def generate_ticket_qr(ticket):
     print(qr_data)
 
 
-def ticket_detail(request, booking_code):
-    booking = get_object_or_404(
-        Booking.objects.prefetch_related("booking_seats__seat").select_related(
-            "showtime",
-            "showtime__movie",
-            "showtime__room",
-            "showtime__room__cinema",
-        ),
-        booking_code=booking_code,
-        status="paid",
-    )
 
-    return render(request, "cinema/ticket_detail.html", {"booking": booking})
 
 
 @login_required
