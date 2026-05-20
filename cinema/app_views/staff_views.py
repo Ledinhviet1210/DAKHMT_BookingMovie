@@ -73,3 +73,57 @@ def staff_confirm_checkin(request, booking_code):
     return redirect(
         "cinema:staff_checkin"
     )
+    
+
+@login_required
+def check_in_ticket(request, booking_code):
+    if not request.user.is_staff:
+        messages.error(
+            request,
+            "Bạn không có quyền thực hiện thao tác này."
+        )
+
+        return redirect(
+            "cinema:ticket_detail",
+            booking_code=booking_code,
+        )
+
+    if request.method != "POST":
+        return redirect(
+            "cinema:ticket_detail",
+            booking_code=booking_code,
+        )
+
+    booking = get_object_or_404(
+        Booking.objects.select_related("ticket"),
+        booking_code=booking_code,
+        status="paid",
+    )
+
+    ticket = booking.ticket
+
+    if ticket.status == "used":
+        messages.warning(
+            request,
+            "Vé này đã được sử dụng trước đó."
+        )
+
+    elif ticket.status == "cancelled":
+        messages.error(
+            request,
+            "Vé này đã bị hủy."
+        )
+
+    else:
+        ticket.status = "used"
+        ticket.save()
+
+        messages.success(
+            request,
+            "Check-in thành công."
+        )
+
+    return redirect(
+        "cinema:ticket_detail",
+        booking_code=booking_code,
+    )

@@ -150,3 +150,22 @@ def create_booking(request, showtime_id):
         return redirect("cinema:seat_selection", showtime_id=showtime_id)
 
     return redirect("cinema:payment", booking_id=booking.id)
+
+
+@login_required
+def booking_detail(request, booking_id):
+    booking = get_object_or_404(
+        Booking.objects.prefetch_related(
+            "booking_seats__seat"
+        ),
+        id=booking_id,
+        user=request.user,
+    )
+
+    return render(
+        request,
+        "cinema/booking_detail.html",
+        {
+            "booking": booking,
+        }
+    )

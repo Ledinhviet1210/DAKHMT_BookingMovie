@@ -62,3 +62,7 @@ def logout_view(request):
     logout(request)
 
     return redirect("cinema:home")
+
+
+def profile(request):
+    return render(request, "cinema/profile.html")

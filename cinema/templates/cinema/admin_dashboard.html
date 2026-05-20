@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard | CineFlow{% endblock %}
+
+{% block content %}
+<main class="max-w-container-max mx-auto px-gutter py-xl space-y-xl">
+
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-md">
+    <div>
+      <div class="inline-flex items-center gap-xs px-sm py-1 rounded-full bg-primary-container/20 text-primary font-bold mb-sm">
+        <span class="material-symbols-outlined text-[18px]">
+          admin_panel_settings
+        </span>
+        Admin / Staff
+      </div>
+
+      <h1 class="font-h2 text-h2 text-on-surface">
+        Admin Dashboard
+      </h1>
+
+      <p class="text-on-surface-variant text-body-lg">
+        Tổng quan doanh thu, booking, lịch chiếu và check-in vé.
+      </p>
+    </div>
+
+    <div class="flex gap-sm">
+      <a
+        href="{% url 'cinema:manage_home' %}"
+        class="inline-flex items-center gap-xs px-lg py-sm bg-primary text-on-primary rounded-xl font-bold"
+      >
+        <span class="material-symbols-outlined">dashboard</span>
+        CineManage
+      </a>
+
+      <a
+        href="/admin/"
+        class="inline-flex items-center gap-xs px-lg py-sm bg-surface-container-high text-primary rounded-xl font-bold"
+      >
+        <span class="material-symbols-outlined">settings</span>
+        Django Admin
+      </a>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
+
+    <div class="bg-surface-container-lowest rounded-2xl p-lg shadow-sm border border-outline-variant/30">
+      <div class="flex items-center justify-between mb-md">
+        <span class="material-symbols-outlined text-primary text-4xl">payments</span>
+        <span class="text-body-sm text-on-surface-variant">Revenue</span>
+      </div>
+
+      <p class="font-h2 text-h2 text-primary">
+        {{ total_revenue|floatformat:0 }}đ
+      </p>
+
+      <p class="text-on-surface-variant">
+        Tổng doanh thu từ booking đã thanh toán
+      </p>
+    </div>
+
+    <div class="bg-surface-container-lowest rounded-2xl p-lg shadow-sm border border-outline-variant/30">
+      <div class="flex items-center justify-between mb-md">
+        <span class="material-symbols-outlined text-primary text-4xl">today</span>
+        <span class="text-body-sm text-on-surface-variant">Today</span>
+      </div>
+
+      <p class="font-h2 text-h2 text-on-surface">
+        {{ today_revenue|floatformat:0 }}đ
+      </p>
+
+      <p class="text-on-surface-variant">
+        Doanh thu hôm nay
+      </p>
+    </div>
+
+    <div class="bg-surface-container-lowest rounded-2xl p-lg shadow-sm border border-outline-variant/30">
+      <div class="flex items-center justify-between mb-md">
+        <span class="material-symbols-outlined text-primary text-4xl">calendar_month</span>
+        <span class="text-body-sm text-on-surface-variant">This Month</span>
+      </div>
+
+      <p class="font-h2 text-h2 text-on-surface">
+        {{ month_revenue|floatformat:0 }}đ
+      </p>
+
+      <p class="text-on-surface-variant">
+        Doanh thu tháng hiện tại
+      </p>
+    </div>
+
+    <div class="bg-surface-container-lowest rounded-2xl p-lg shadow-sm border border-outline-variant/30">
+      <div class="flex items-center justify-between mb-md">
+        <span class="material-symbols-outlined text-primary text-4xl">confirmation_number</span>
+        <span class="text-body-sm text-on-surface-variant">Bookings</span>
+      </div>
+
+      <p class="font-h2 text-h2 text-on-surface">
+        {{ paid_bookings }}
+      </p>
+
+      <p class="text-on-surface-variant">
+        Booking đã thanh toán
+      </p>
+    </div>
+
+    <div class="bg-surface-container-lowest rounded-2xl p-lg shadow-sm border border-outline-variant/30">
+      <div class="flex items-center justify-between mb-md">
+        <span class="material-symbols-outlined text-primary text-4xl">done_all</span>
+        <span class="text-body-sm text-on-surface-variant">Checked-in</span>
+      </div>
+
+      <p class="font-h2 text-h2 text-on-surface">
+        {{ checked_in_tickets }}
+      </p>
+
+      <p class="text-on-surface-variant">
+        Vé đã check-in
+      </p>
+    </div>
+
+    <div class="bg-surface-container-lowest rounded-2xl p-lg shadow-sm border border-outline-variant/30">
+      <div class="flex items-center justify-between mb-md">
+        <span class="material-symbols-outlined text-primary text-4xl">event</span>
+        <span class="text-body-sm text-on-surface-variant">Showtimes</span>
+      </div>
+
+      <p class="font-h2 text-h2 text-on-surface">
+        {{ total_showtimes }}
+      </p>
+
+      <p class="text-on-surface-variant">
+        Tổng số suất chiếu
+      </p>
+    </div>
+
+  </section>
+
+  <!-- Recent paid bookings -->
+  <section class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/30 overflow-hidden">
+    <div class="p-lg border-b border-outline-variant/30">
+      <h2 class="font-h3 text-h3">
+        Booking đã thanh toán gần đây
+      </h2>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead class="bg-surface-container-low">
+          <tr>
+            <th class="p-md text-body-sm text-on-surface-variant">Mã</th>
+            <th class="p-md text-body-sm text-on-surface-variant">Khách</th>
+            <th class="p-md text-body-sm text-on-surface-variant">Phim</th>
+            <th class="p-md text-body-sm text-on-surface-variant">Suất chiếu</th>
+            <th class="p-md text-body-sm text-on-surface-variant">Ghế</th>
+            <th class="p-md text-body-sm text-on-surface-variant">Tổng tiền</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for booking in recent_paid_bookings %}
+            <tr class="border-t border-outline-variant/20">
+              <td class="p-md font-bold text-primary">
+                {{ booking.booking_code }}
+              </td>
+
+              <td class="p-md">
+                {{ booking.user.username }}
+              </td>
+
+              <td class="p-md">
+                {{ booking.showtime.movie.title }}
+              </td>
+
+              <td class="p-md">
+                {{ booking.showtime.start_time|date:"d/m/Y H:i" }}
+              </td>
+
+              <td class="p-md">
+                {% for item in booking.booking_seats.all %}
+                  {{ item.seat.row }}{{ item.seat.number }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+              </td>
+
+              <td class="p-md font-bold">
+                {{ booking.total_price|floatformat:0 }}đ
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="6" class="p-xl text-center text-on-surface-variant">
+                Chưa có booking đã thanh toán.
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+{% endblock %}
