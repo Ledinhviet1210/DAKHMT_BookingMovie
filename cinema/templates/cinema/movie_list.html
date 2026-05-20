@@ -1,0 +1,306 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Movies | CineFlow{% endblock %}
+
+{% block content %}
+<main class="max-w-container-max mx-auto px-gutter py-xl">
+  <div class="flex flex-col md:flex-row gap-xl">
+
+    <!-- Filter Sidebar -->
+    <!-- Filter Sidebar -->
+    <aside class="w-full md:w-72 flex-shrink-0">
+      <div class="bg-surface-container-lowest rounded-2xl p-lg shadow-sm border border-outline-variant/30 sticky top-24">
+        <h3 class="font-h3 text-h3 mb-md text-on-surface">
+          Bộ lọc phim
+        </h3>
+
+        <form method="get" class="space-y-md">
+
+          <!-- Search -->
+          <div>
+            <label class="font-label-caps text-label-caps text-outline block mb-sm">
+              TÌM PHIM
+            </label>
+
+            <input
+              type="text"
+              name="q"
+              value="{{ search_query }}"
+              placeholder="Nhập tên phim..."
+              class="w-full bg-surface-container-low border border-outline-variant rounded-xl px-md py-sm text-body-sm focus:border-primary focus:ring-primary-container"
+            >
+          </div>
+
+          <!-- Cinema -->
+          <div>
+            <label class="font-label-caps text-label-caps text-outline block mb-sm">
+              RẠP CHIẾU
+            </label>
+
+            <select
+              name="cinema"
+              class="w-full bg-surface-container-low border border-outline-variant rounded-xl px-md py-sm text-body-sm focus:border-primary focus:ring-primary-container"
+            >
+              <option value="">Tất cả rạp</option>
+
+              {% for cinema in cinemas %}
+                <option
+                  value="{{ cinema.id }}"
+                  {% if selected_cinema_id == cinema.id|stringformat:"s" %}selected{% endif %}
+                >
+                  {{ cinema.name }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Genre -->
+          <div>
+            <label class="font-label-caps text-label-caps text-outline block mb-sm">
+              THỂ LOẠI
+            </label>
+
+            <select
+              name="genre"
+              class="w-full bg-surface-container-low border border-outline-variant rounded-xl px-md py-sm text-body-sm focus:border-primary focus:ring-primary-container"
+            >
+              <option value="">Tất cả thể loại</option>
+
+              {% for item in genres %}
+                <option
+                  value="{{ item }}"
+                  {% if selected_genre == item %}selected{% endif %}
+                >
+                  {{ item }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Status -->
+          <div>
+            <label class="font-label-caps text-label-caps text-outline block mb-sm">
+              TRẠNG THÁI
+            </label>
+
+            <select
+              name="status"
+              class="w-full bg-surface-container-low border border-outline-variant rounded-xl px-md py-sm text-body-sm focus:border-primary focus:ring-primary-container"
+            >
+              <option value="">Tất cả trạng thái</option>
+              <option value="now_showing" {% if selected_status == "now_showing" %}selected{% endif %}>
+                Đang chiếu
+              </option>
+              <option value="coming_soon" {% if selected_status == "coming_soon" %}selected{% endif %}>
+                Sắp chiếu
+              </option>
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full py-sm bg-primary text-on-primary font-button text-button rounded-xl hover:opacity-90 transition-all"
+          >
+            Áp dụng bộ lọc
+          </button>
+
+          <a
+            href="{% url 'cinema:movie_list' %}"
+            class="block text-center w-full py-sm bg-surface-container-high text-primary font-button text-button rounded-xl hover:bg-primary-container/20 transition-colors"
+          >
+            Xóa bộ lọc
+          </a>
+
+        </form>
+      </div>
+    </aside>
+
+    <!-- Movie Content -->
+    <section class="flex-1 space-y-xl">
+
+      <!-- Now Showing -->
+      <section>
+        <div class="flex justify-between items-end mb-lg">
+          <div>
+            <h2 class="font-h2 text-h2 text-on-surface">
+              Phim đang chiếu
+            </h2>
+
+            <p class="text-body-md text-on-surface-variant">
+              Chọn phim và đặt vé tại rạp bạn yêu thích.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
+          {% for movie in now_showing_movies %}
+            <div class="movie-card group bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+              <div class="relative aspect-[2/3] overflow-hidden">
+                {% if movie.poster %}
+                  <img
+                    class="movie-image w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    src="{{ movie.poster.url }}"
+                    alt="{{ movie.title }}"
+                  />
+                {% else %}
+                  <div class="w-full h-full bg-surface-container-high flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary text-5xl">
+                      movie
+                    </span>
+                  </div>
+                {% endif %}
+
+                <div class="absolute top-sm right-sm bg-inverse-surface/80 text-white rounded-lg px-xs py-1 text-label-caps backdrop-blur-sm">
+                  {{ movie.age_rating }}
+                </div>
+
+                <div class="absolute top-sm left-sm bg-primary text-on-primary rounded-lg px-xs py-1 text-[11px] font-bold">
+                  Đang chiếu
+                </div>
+              </div>
+
+              <div class="p-md">
+                <div class="flex flex-wrap gap-xs mb-xs">
+                  <span class="bg-primary-fixed text-on-primary-fixed px-xs py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                    {{ movie.genre }}
+                  </span>
+                </div>
+
+                <h3 class="font-h3 text-h3 text-on-surface truncate mb-1">
+                  {{ movie.title }}
+                </h3>
+
+                <div class="flex items-center gap-xs text-on-surface-variant text-body-sm mb-md">
+                  <span class="material-symbols-outlined text-[16px]">
+                    schedule
+                  </span>
+                  <span>{{ movie.duration }} phút</span>
+                </div>
+
+                <a
+                  href="{% url 'cinema:movie_detail' movie.id %}"
+                  class="block text-center w-full bg-primary text-on-primary font-button text-button py-sm rounded-xl hover:opacity-90"
+                >
+                  Đặt vé
+                </a>
+              </div>
+            </div>
+          {% empty %}
+            <div class="col-span-full bg-surface-container-lowest rounded-2xl p-xl text-center">
+              <span class="material-symbols-outlined text-primary text-5xl mb-sm">
+                movie
+              </span>
+
+              <p class="text-on-surface-variant">
+                Không có phim đang chiếu phù hợp với bộ lọc.
+              </p>
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <!-- Coming Soon -->
+      <section>
+        <div class="flex justify-between items-end mb-lg">
+          <div>
+            <h2 class="font-h2 text-h2 text-on-surface">
+              Phim sắp chiếu
+            </h2>
+
+            <p class="text-body-md text-on-surface-variant">
+              Các phim sắp ra mắt tại CineFlow.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
+          {% for movie in coming_soon_movies %}
+            <div class="movie-card group bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+              <div class="relative aspect-[2/3] overflow-hidden">
+                {% if movie.poster %}
+                  <img
+                    class="movie-image w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    src="{{ movie.poster.url }}"
+                    alt="{{ movie.title }}"
+                  />
+                {% else %}
+                  <div class="w-full h-full bg-surface-container-high flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary text-5xl">
+                      movie
+                    </span>
+                  </div>
+                {% endif %}
+
+                <div class="absolute top-sm right-sm bg-inverse-surface/80 text-white rounded-lg px-xs py-1 text-label-caps backdrop-blur-sm">
+                  {{ movie.age_rating }}
+                </div>
+
+                <div class="absolute top-sm left-sm bg-surface-container-lowest text-primary rounded-lg px-xs py-1 text-[11px] font-bold shadow-sm">
+                  Sắp chiếu
+                </div>
+              </div>
+
+              <div class="p-md">
+                <div class="flex flex-wrap gap-xs mb-xs">
+                  <span class="bg-primary-fixed text-on-primary-fixed px-xs py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                    {{ movie.genre }}
+                  </span>
+                </div>
+
+                <h3 class="font-h3 text-h3 text-on-surface truncate mb-1">
+                  {{ movie.title }}
+                </h3>
+
+                <div class="flex items-center gap-xs text-on-surface-variant text-body-sm mb-md">
+                  <span class="material-symbols-outlined text-[16px]">
+                    schedule
+                  </span>
+                  <span>{{ movie.duration }} phút</span>
+                </div>
+
+                <a
+                  href="{% url 'cinema:movie_detail' movie.id %}"
+                  class="block text-center w-full bg-surface-container-high text-primary font-button text-button py-sm rounded-xl hover:bg-primary-container/20"
+                >
+                  Xem chi tiết
+                </a>
+              </div>
+            </div>
+          {% empty %}
+            <div class="col-span-full bg-surface-container-lowest rounded-2xl p-xl text-center">
+              <span class="material-symbols-outlined text-primary text-5xl mb-sm">
+                event_busy
+              </span>
+
+              <p class="text-on-surface-variant">
+                Chưa có phim sắp chiếu.
+              </p>
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+
+    </section>
+  </div>
+</main>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const button = document.getElementById("cinema-filter-button");
+    const menu = document.getElementById("cinema-filter-menu");
+
+    if (!button || !menu) return;
+
+    button.addEventListener("click", function () {
+      menu.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", function (event) {
+      if (!button.contains(event.target) && !menu.contains(event.target)) {
+        menu.classList.add("hidden");
+      }
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lịch chiếu | CineFlow{% endblock %}
+
+{% block content %}
+<main class="max-w-container-max mx-auto px-gutter py-xl">
+  <div class="mb-xl">
+    <form
+      method="get"
+      class="bg-surface-container-lowest rounded-2xl p-lg shadow-sm border border-outline-variant/30 mb-xl grid grid-cols-1 md:grid-cols-3 gap-md"
+    >
+      <div>
+        <label class="font-label-caps text-label-caps text-outline block mb-sm">
+          NGÀY CHIẾU
+        </label>
+
+        <input
+          type="date"
+          name="date"
+          value="{{ selected_date }}"
+          class="w-full bg-surface-container-low border border-outline-variant rounded-xl px-md py-sm text-body-sm focus:border-primary focus:ring-primary-container"
+        >
+      </div>
+
+      <div>
+        <label class="font-label-caps text-label-caps text-outline block mb-sm">
+          RẠP CHIẾU
+        </label>
+
+        <select
+          name="cinema"
+          class="w-full bg-surface-container-low border border-outline-variant rounded-xl px-md py-sm text-body-sm focus:border-primary focus:ring-primary-container"
+        >
+          <option value="">Tất cả rạp</option>
+
+          {% for cinema in cinemas %}
+            <option
+              value="{{ cinema.id }}"
+              {% if selected_cinema_id == cinema.id|stringformat:"s" %}selected{% endif %}
+            >
+              {{ cinema.name }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="flex items-end gap-sm">
+        <button
+          type="submit"
+          class="flex-1 bg-primary text-on-primary py-sm rounded-xl font-bold"
+        >
+          Lọc lịch chiếu
+        </button>
+
+        <a
+          href="{% url 'cinema:showtime_list' %}"
+          class="flex-1 text-center bg-surface-container-high text-primary py-sm rounded-xl font-bold"
+        >
+          Xóa
+        </a>
+      </div>
+    </form>
+    <h1 class="font-h1 text-h1 text-on-surface mb-xs">
+      Lịch chiếu
+    </h1>
+    <p class="text-body-lg text-on-surface-variant">
+      Xem lịch chiếu các phim đang mở bán vé.
+    </p>
+  </div>
+
+  {% if showtimes %}
+    {% regroup showtimes by start_time.date as date_groups %}
+
+    <div class="space-y-xl">
+      {% for date_group in date_groups %}
+        <section class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/30 overflow-hidden">
+          <div class="px-lg py-md bg-primary text-on-primary">
+            <h2 class="font-h3 text-h3">
+              {{ date_group.grouper|date:"d/m/Y" }}
+            </h2>
+          </div>
+
+          <div class="p-lg space-y-lg">
+            {% regroup date_group.list by movie as movie_groups %}
+
+            {% for movie_group in movie_groups %}
+              <div class="grid grid-cols-1 lg:grid-cols-12 gap-lg p-md rounded-2xl bg-surface-container-low">
+                <div class="lg:col-span-3">
+                  <div class="flex gap-md">
+                    <div class="w-24 h-36 rounded-xl overflow-hidden bg-surface-container-high flex-shrink-0">
+                      {% if movie_group.grouper.poster %}
+                        <img
+                          src="{{ movie_group.grouper.poster.url }}"
+                          alt="{{ movie_group.grouper.title }}"
+                          class="w-full h-full object-cover"
+                        >
+                      {% else %}
+                        <div class="w-full h-full flex items-center justify-center">
+                          <span class="material-symbols-outlined text-primary text-4xl">
+                            movie
+                          </span>
+                        </div>
+                      {% endif %}
+                    </div>
+
+                    <div>
+                      <h3 class="font-h3 text-h3 text-on-surface leading-tight">
+                        {{ movie_group.grouper.title }}
+                      </h3>
+
+                      <p class="text-body-sm text-on-surface-variant mt-xs">
+                        {{ movie_group.grouper.genre }} • {{ movie_group.grouper.duration }} phút
+                      </p>
+
+                      <span class="inline-flex mt-sm px-sm py-1 rounded-full bg-primary-container/20 text-primary text-[12px] font-bold">
+                        {{ movie_group.grouper.age_rating }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lg:col-span-9 space-y-md">
+                  {% regroup movie_group.list by room.cinema as cinema_groups %}
+
+                  {% for cinema_group in cinema_groups %}
+                    <div class="bg-surface-container-lowest rounded-xl p-md border border-outline-variant/30">
+                      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-sm mb-sm">
+                        <div>
+                          <h4 class="font-button text-on-surface">
+                            {{ cinema_group.grouper.name }}
+                          </h4>
+
+                          <p class="text-[12px] text-on-surface-variant">
+                            {{ cinema_group.grouper.address }}
+                          </p>
+                        </div>
+
+                        <span class="text-[12px] text-primary font-bold">
+                          {{ cinema_group.list|length }} suất
+                        </span>
+                      </div>
+
+                      <div class="flex flex-wrap gap-xs">
+                        {% for showtime in cinema_group.list %}
+                          <a
+                            href="{% url 'cinema:seat_selection' showtime.id %}"
+                            class="px-md py-sm bg-white border border-outline-variant/40 rounded-xl hover:border-primary hover:bg-primary-container/10 transition-all"
+                          >
+                            <span class="block text-primary font-bold">
+                              {{ showtime.start_time|date:"H:i" }}
+                            </span>
+
+                            <span class="block text-[11px] text-on-surface-variant">
+                              {{ showtime.start_time|date:"d/m" }}
+                            </span>
+                          </a>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </section>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="bg-surface-container-lowest rounded-2xl p-xl text-center shadow-sm">
+      <span class="material-symbols-outlined text-primary text-6xl mb-md">
+        event_busy
+      </span>
+
+      <h2 class="font-h3 text-h3 text-on-surface mb-xs">
+        Chưa có lịch chiếu
+      </h2>
+
+      <p class="text-on-surface-variant">
+        Hiện chưa có suất chiếu nào đang mở bán.
+      </p>
+    </div>
+  {% endif %}
+</main>
+{% endblock %}

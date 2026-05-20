@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Profile - CineFlow{% endblock %}
+
+{% block content %}
+<main class="max-w-container-max mx-auto px-gutter py-xl">
+<div class="flex flex-col md:flex-row gap-xl">
+<!-- Sidebar Navigation -->
+<aside class="w-full md:w-64 shrink-0">
+<div class="bg-surface-container-lowest rounded-2xl p-md shadow-sm border border-outline-variant/20 sticky top-24">
+<div class="flex flex-col gap-xs">
+<a class="flex items-center gap-sm px-md py-sm rounded-xl text-primary font-bold border-b-2 border-primary bg-primary-container/10" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-body-md text-body-md">Profile</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm rounded-xl text-on-surface-variant hover:text-primary hover:bg-primary-container/5 transition-all" href="#">
+<span class="material-symbols-outlined">confirmation_number</span>
+<span class="font-body-md text-body-md">My Bookings</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm rounded-xl text-on-surface-variant hover:text-primary hover:bg-primary-container/5 transition-all" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<span class="font-body-md text-body-md">Favorites</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm rounded-xl text-on-surface-variant hover:text-primary hover:bg-primary-container/5 transition-all" href="#">
+<span class="material-symbols-outlined">security</span>
+<span class="font-body-md text-body-md">Security</span>
+</a>
+<hr class="my-sm border-outline-variant/30"/>
+<a class="flex items-center gap-sm px-md py-sm rounded-xl text-error hover:bg-error-container/10 transition-all" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-body-md text-body-md">Sign Out</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<div class="flex-1 space-y-xl">
+<!-- Profile Header & Stats -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+<!-- User Info Card -->
+<div class="lg:col-span-2 bg-surface-container-lowest rounded-2xl p-lg shadow-sm border border-outline-variant/20 flex flex-col sm:flex-row items-center gap-lg">
+<div class="relative group">
+<img class="w-32 h-32 rounded-full object-cover border-4 border-primary-container shadow-md" data-alt="A high-quality portrait of a professional man in his early 30s with a friendly smile, set against a blurred cinematic studio background. The lighting is soft and directional, typical of a high-end corporate profile picture. The color palette features cool blues and warm skin tones, perfectly aligned with a modern SaaS aesthetic. The image is crisp, detailed, and professional." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVSNez_pmvtwS6CwpqgZo-uGb8HYM1knN8vw_Tqkmcvy52bEg7qzdvr6lWvvErHgFRUAUx0kqADbACPl912LvaQuyUWi30FqFQe76-jULW9wQZWmGQ2ShaZFFtxow3bcCAlD9L36ax8_7saAc78GeERYYOegB5_Nr4qPnFPscVAfW_u7wcgo794IUFV8hvN1A1FRRH3RAM4rFpbF4tN1PSXLuTPBO20sT1E7iacU592P7m2zCDRDO5UFYOhd5XB3fHnx7nYR5eML4p"/>
+<button class="absolute bottom-0 right-0 bg-primary text-on-primary p-xs rounded-full shadow-md hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+</div>
+<div class="flex-1 text-center sm:text-left">
+<h1 class="font-h2 text-h2 text-on-surface">Alex Thompson</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Member since October 2023</p>
+<div class="mt-md flex flex-wrap gap-sm justify-center sm:justify-start">
+<span class="px-md py-xs bg-secondary-container text-on-secondary-container rounded-full text-label-caps">Gold Member</span>
+<span class="px-md py-xs bg-tertiary-container text-on-tertiary-container rounded-full text-label-caps">Verified Account</span>
+</div>
+</div>
+</div>
+<!-- Stats Bento -->
+<div class="grid grid-cols-2 lg:grid-cols-1 gap-md">
+<div class="bg-primary text-on-primary rounded-2xl p-md shadow-sm flex flex-col justify-between">
+<span class="material-symbols-outlined opacity-80">payments</span>
+<div>
+<p class="text-label-caps uppercase opacity-80">Total Spent</p>
+<p class="font-h3 text-h3">$432.50</p>
+</div>
+</div>
+<div class="bg-surface-container-highest rounded-2xl p-md shadow-sm flex flex-col justify-between">
+<span class="material-symbols-outlined text-primary">movie</span>
+<div>
+<p class="text-label-caps uppercase text-on-surface-variant">Movies Watched</p>
+<p class="font-h3 text-h3 text-on-surface">24</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Personal Information & Form -->
+<section class="bg-surface-container-lowest rounded-2xl p-lg shadow-sm border border-outline-variant/20">
+<div class="flex justify-between items-center mb-lg">
+<h2 class="font-h3 text-h3 text-on-surface">Personal Information</h2>
+<button class="text-primary font-button text-button flex items-center gap-xs">
+<span class="material-symbols-outlined text-[20px]">save</span> Save Changes
+                        </button>
+</div>
+<form class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<div class="space-y-xs">
+<label class="font-label-caps text-on-surface-variant uppercase">Full Name</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-xl px-md py-sm focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all" type="text" value="Alex Thompson"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-caps text-on-surface-variant uppercase">Email Address</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-xl px-md py-sm focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all" type="email" value="alex.thompson@example.com"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-caps text-on-surface-variant uppercase">Phone Number</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-xl px-md py-sm focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all" type="tel" value="+1 (555) 012-3456"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-caps text-on-surface-variant uppercase">Preferred Language</label>
+<select class="w-full bg-surface-container-low border border-outline-variant rounded-xl px-md py-sm focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all">
+<option>English (US)</option>
+<option>English (UK)</option>
+<option>Spanish</option>
+<option>French</option>
+</select>
+</div>
+</form>
+</section>
+<!-- Favorite Movies Grid -->
+<section>
+<div class="flex justify-between items-end mb-md">
+<h2 class="font-h3 text-h3 text-on-surface">Favorite Movies</h2>
+<a class="text-primary font-button hover:underline" href="#">View All</a>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-md">
+<!-- Movie Card 1 -->
+<div class="group cursor-pointer">
+<div class="relative overflow-hidden rounded-2xl shadow-sm mb-xs">
+<img class="w-full aspect-[2/3] object-cover group-hover:scale-105 transition-transform duration-300" data-alt="A vibrant and cinematic movie poster for a sci-fi thriller set in a neon-lit futuristic Tokyo. The image features high contrast with deep blues, magenta glows, and sharp architectural lines. Rain-slicked streets reflect the colorful advertisements. The mood is atmospheric and immersive, capturing the essence of modern blockbuster cinematography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQyLsRbV0tnN_khe0Q3GuN6_Shi44bghFkfR4zCQl88i_5kwG3pmzgc2bJsNE8zaePql0SrJ9q2pCotjFL3YcT9ARuWwm-KtwrmRq7VxeQTCj5qNvNeQeZ_1AP_hUn_zy3gkF2ljVxlLKpgjJ3pKWgojbjLis-HAnDeKfi9YrNXK9WuxLubGvUxsHtuhhfut3hcH1T9bX6kahAhraWhmT90Gq7ElcF3YP8lUWuK3pJ-hcV-bxjEDgDNC9TyKh2WHanwyV5hDjypNwn"/>
+<div class="absolute top-2 right-2">
+<button class="bg-surface/80 backdrop-blur-md p-xs rounded-full text-error">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+</div>
+<h3 class="font-body-md font-bold text-on-surface truncate">Neon Horizon</h3>
+<p class="font-body-sm text-on-surface-variant">Sci-Fi • 2024</p>
+</div>
+<!-- Movie Card 2 -->
+<div class="group cursor-pointer">
+<div class="relative overflow-hidden rounded-2xl shadow-sm mb-xs">
+<img class="w-full aspect-[2/3] object-cover group-hover:scale-105 transition-transform duration-300" data-alt="A dramatic black and white movie poster showcasing a classical mystery setting. A silhouette of a detective stands under a single streetlamp in a fog-filled London alleyway. The lighting is moody and noir-inspired, with long shadows and sharp highlights. The visual style is elegant, timeless, and sophisticated, echoing a prestigious award-winning drama." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLw0zuyxjJ6HZkXCXYRjzvzPmIJJxVb9xHAztnU-xKdZRGU_U4egY45dzuQKX86DxH4YCtXGtYEUCQ_hVXbPj4Dyw48ZLBdZJ9GJJs80pYMl01M7p0iSaoHct63GQWnwrkZfiolOCQrNjDBmNnh4oD1EWZUb6GMboVuxgQdWjv3eOhpPtYDbwL3w_mmPTo6oUdMhTx5ZjXtebTI5EoLfvfid4HtekExPGvUgUcXgWyg5AuUSVzJql17hr-4dHmeqD4nszpvIntkbFC"/>
+<div class="absolute top-2 right-2">
+<button class="bg-surface/80 backdrop-blur-md p-xs rounded-full text-error">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+</div>
+<h3 class="font-body-md font-bold text-on-surface truncate">Midnight Echo</h3>
+<p class="font-body-sm text-on-surface-variant">Mystery • 2023</p>
+</div>
+<!-- Movie Card 3 -->
+<div class="group cursor-pointer">
+<div class="relative overflow-hidden rounded-2xl shadow-sm mb-xs">
+<img class="w-full aspect-[2/3] object-cover group-hover:scale-105 transition-transform duration-300" data-alt="A warm, sun-drenched movie poster for a romantic comedy set in the hills of Tuscany. The color palette is filled with golden yellows, olive greens, and soft terracotta. The lighting is natural and bright, suggesting a breezy summer afternoon. The overall mood is uplifting, joyful, and serene, representing high-quality cinematography and production design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7Kq_MfY_MdWNDaup_Hk0fNrHNeo40cDYGnzYfwOImt4AzTZjtpeVJwnOWsSuRFs7VDh9vvmB3p-uaGW_VAB8Grxrpew33jqnI-JxKKqELMJ7ILqfNbeygTAKChhGRjmrO0wh8XcIbczHynbcZnKprwr3Ed8C2SpovHHF9aDACDVE12qtN1djK2qUchMkJr_hSk6hMDljrymYvxQ_ZW82hUZrbu3u6-JZ_vfAuXepCPE66fCp3k6BUSIc3-OK_9Qx4pyNyePEiotpt"/>
+<div class="absolute top-2 right-2">
+<button class="bg-surface/80 backdrop-blur-md p-xs rounded-full text-error">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+</div>
+<h3 class="font-body-md font-bold text-on-surface truncate">Summer Reverie</h3>
+<p class="font-body-sm text-on-surface-variant">Romance • 2024</p>
+</div>
+<!-- Movie Card 4 -->
+<div class="group cursor-pointer">
+<div class="relative overflow-hidden rounded-2xl shadow-sm mb-xs">
+<img class="w-full aspect-[2/3] object-cover group-hover:scale-105 transition-transform duration-300" data-alt="An intense action movie poster featuring an epic desert landscape with giant dust storms. The palette is dominated by oranges, browns, and harsh sunlight. High-speed pursuit vehicles are visible in the distance. The mood is gritty, high-stakes, and energetic, with a cinematic focus on scale and explosive environmental effects." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5zwB86ooT52CPODKIHFIKYK7lmNO4D2BJwl_Dw8NPRPoqBMVsGhbZskND2usDyVTQMfHWEsC7yYqVGqVGBEnCxMJxy8EHiGcfAs_Nc9kZWmgtugY9pYv3vmaVITcg1G0SJbMgYQC65uSlxt_GxyUes7JV81dZnKZv8eXOrmI1YpfCGHAy_j3nhFzrkiL43yVyeDtgjfYyrlRrNSFeDiylMrWBfZz360E--qSmVRPFCV4nC2OsyIQLEV94qsL61wcFVl2mFZ1TPlC0"/>
+<div class="absolute top-2 right-2">
+<button class="bg-surface/80 backdrop-blur-md p-xs rounded-full text-error">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+</div>
+<h3 class="font-body-md font-bold text-on-surface truncate">Dust Protocol</h3>
+<p class="font-body-sm text-on-surface-variant">Action • 2024</p>
+</div>
+</div>
+</section>
+<!-- Security Settings -->
+<section class="bg-surface-container-lowest rounded-2xl p-lg shadow-sm border border-outline-variant/20">
+<h2 class="font-h3 text-h3 text-on-surface mb-lg">Security Settings</h2>
+<div class="space-y-lg">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md p-md bg-surface-container-low rounded-xl">
+<div>
+<h3 class="font-body-md font-bold text-on-surface">Password</h3>
+<p class="font-body-sm text-on-surface-variant">Change your password regularly to stay secure</p>
+</div>
+<button class="bg-primary-container text-on-primary-container font-button text-button px-md py-sm rounded-xl hover:opacity-90 transition-all">
+                                Change Password
+                            </button>
+</div>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md p-md bg-surface-container-low rounded-xl">
+<div>
+<h3 class="font-body-md font-bold text-on-surface">Two-Factor Authentication</h3>
+<p class="font-body-sm text-on-surface-variant">Add an extra layer of security to your account</p>
+</div>
+<div class="flex items-center gap-xs text-primary font-bold">
+<span class="material-symbols-outlined">check_circle</span>
+                                Enabled
+                            </div>
+</div>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md p-md bg-error-container/10 border border-error/20 rounded-xl">
+<div>
+<h3 class="font-body-md font-bold text-error">Delete Account</h3>
+<p class="font-body-sm text-on-surface-variant">Permanently remove your account and all data</p>
+</div>
+<button class="text-error font-button text-button hover:underline">
+                                Delete My Account
+                            </button>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+{% endblock %}

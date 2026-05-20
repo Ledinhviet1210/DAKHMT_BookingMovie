@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Vé điện tử | CineFlow{% endblock %}
+
+{% block content %}
+<main class="max-w-3xl mx-auto px-gutter py-xl">
+  <div class="bg-surface-container-lowest rounded-3xl shadow-sm border border-outline-variant/30 overflow-hidden">
+
+    <div class="bg-primary text-on-primary p-xl text-center">
+      <span class="material-symbols-outlined text-6xl mb-md">
+        confirmation_number
+      </span>
+
+      <h1 class="font-h2 text-h2">
+        Vé điện tử CineFlow
+      </h1>
+
+      <p class="opacity-90 mt-xs">
+        Vui lòng xuất trình vé này tại rạp.
+      </p>
+    </div>
+
+    <div class="p-xl space-y-lg">
+
+      <div>
+        <h2 class="font-h3 text-h3">
+          {{ booking.showtime.movie.title }}
+        </h2>
+
+        <p class="text-on-surface-variant">
+          {{ booking.showtime.movie.genre }} • {{ booking.showtime.movie.duration }} phút
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+
+        <div class="bg-surface-container-low rounded-xl p-md">
+          <p class="text-body-sm text-on-surface-variant">
+            Mã booking
+          </p>
+
+          <p class="font-bold text-primary text-xl">
+            {{ booking.booking_code }}
+          </p>
+        </div>
+
+        <div class="bg-surface-container-low rounded-xl p-md">
+          <p class="text-body-sm text-on-surface-variant">
+            Trạng thái thanh toán
+          </p>
+
+          <p class="font-bold text-green-600 text-xl">
+            ĐÃ THANH TOÁN
+          </p>
+        </div>
+
+        <div class="bg-surface-container-low rounded-xl p-md md:col-span-2">
+          <p class="text-body-sm text-on-surface-variant">
+            Trạng thái vé
+          </p>
+
+          {% if booking.ticket.status == "valid" %}
+            <p class="font-bold text-green-600 text-xl">
+              HỢP LỆ
+            </p>
+          {% elif booking.ticket.status == "used" %}
+            <p class="font-bold text-gray-600 text-xl">
+              ĐÃ SỬ DỤNG
+            </p>
+          {% elif booking.ticket.status == "cancelled" %}
+            <p class="font-bold text-red-600 text-xl">
+              ĐÃ HỦY
+            </p>
+          {% else %}
+            <p class="font-bold text-yellow-600 text-xl">
+              CHƯA XÁC ĐỊNH
+            </p>
+          {% endif %}
+        </div>
+
+      </div>
+
+      <div class="space-y-sm text-body-lg">
+
+        <p>
+          <strong>Rạp:</strong>
+          {{ booking.showtime.room.cinema.name }}
+        </p>
+
+        <p>
+          <strong>Phòng:</strong>
+          {{ booking.showtime.room.name }}
+        </p>
+
+        <p>
+          <strong>Suất chiếu:</strong>
+          {{ booking.showtime.start_time|date:"d/m/Y H:i" }}
+        </p>
+
+        <div>
+          <strong>Ghế:</strong>
+
+          <div class="flex flex-wrap gap-xs mt-xs">
+            {% for item in booking.booking_seats.all %}
+              <span class="px-sm py-1 rounded-lg bg-primary-container/20 text-primary font-bold">
+                {{ item.seat.row }}{{ item.seat.number }}
+              </span>
+            {% endfor %}
+          </div>
+        </div>
+
+        <p>
+          <strong>Tổng tiền:</strong>
+          {{ booking.total_price|floatformat:0 }}đ
+        </p>
+
+      </div>
+
+      {% if request.user.is_staff and booking.ticket.status == "valid" %}
+        <form
+          method="post"
+          action="{% url 'cinema:check_in_ticket' booking.booking_code %}"
+        >
+          {% csrf_token %}
+
+          <button
+            type="submit"
+            class="w-full bg-primary text-on-primary py-md rounded-xl font-bold hover:opacity-90"
+          >
+            Xác nhận check-in
+          </button>
+        </form>
+      {% elif booking.ticket.status == "used" %}
+        <div class="p-md rounded-xl bg-gray-100 text-gray-700 text-center font-bold">
+          Vé này đã được sử dụng.
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+</main>
+{% endblock %}

@@ -1,0 +1,183 @@
+{% extends 'cinema/manage/base_manage.html' %}
+
+{% block title %}Cinema Management | CineFlow{% endblock %}
+
+{% block manage_content %}
+
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md mb-xl">
+  <div>
+    <h2 class="text-4xl font-bold text-on-surface">
+      Cinema Management
+    </h2>
+
+    <p class="text-on-surface-variant">
+      Quản lý danh sách rạp chiếu, địa chỉ và số lượng phòng chiếu.
+    </p>
+  </div>
+
+  <a
+    href="/admin/cinema/cinema/add/"
+    class="flex items-center justify-center gap-xs bg-primary text-on-primary px-lg py-sm rounded-xl font-bold hover:shadow-md transition-all active:scale-95"
+  >
+    <span class="material-symbols-outlined">add</span>
+    Add Cinema
+  </a>
+</div>
+
+<div class="bg-surface-container-lowest rounded-2xl shadow-sm p-md mb-lg border border-outline-variant/30">
+  <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-md">
+
+    <div class="space-y-xs">
+      <label class="text-xs font-bold text-on-surface-variant block">
+        SEARCH CINEMA
+      </label>
+
+      <div class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-sm">
+        <span class="material-symbols-outlined text-outline">search</span>
+
+        <input
+          class="bg-transparent border-none focus:ring-0 text-sm w-full py-2"
+          placeholder="Cinema name..."
+          type="text"
+          name="q"
+          value="{{ search_query }}"
+        />
+      </div>
+    </div>
+
+    <div class="space-y-xs">
+      <label class="text-xs font-bold text-on-surface-variant block">
+        CITY
+      </label>
+
+      <select
+        name="city"
+        class="w-full bg-surface-container-low border border-outline-variant rounded-xl py-2 px-sm text-sm focus:ring-primary focus:border-primary"
+      >
+        <option value="">All Cities</option>
+
+        {% for city in cities %}
+          <option value="{{ city }}" {% if selected_city == city %}selected{% endif %}>
+            {{ city }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="flex items-end">
+      <button
+        type="submit"
+        class="w-full bg-secondary-container text-primary py-[10px] rounded-xl font-bold hover:bg-primary-container transition-colors"
+      >
+        Apply Filter
+      </button>
+    </div>
+
+  </form>
+</div>
+
+<div class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/30 overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse">
+
+      <thead>
+        <tr class="bg-surface-container-low border-b border-outline-variant">
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant">CINEMA</th>
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant">CITY</th>
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant">ADDRESS</th>
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant">ROOMS</th>
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant text-right">ACTIONS</th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y divide-outline-variant/30">
+        {% for cinema in cinemas %}
+          <tr class="hover:bg-surface-container-low transition-colors duration-150">
+
+            <td class="px-md py-sm">
+              <div class="flex items-center gap-sm">
+                <div class="w-11 h-11 rounded-xl bg-primary text-on-primary flex items-center justify-center">
+                  <span class="material-symbols-outlined">theaters</span>
+                </div>
+
+                <div>
+                  <p class="font-bold text-on-surface">
+                    {{ cinema.name }}
+                  </p>
+
+                  <p class="text-sm text-on-surface-variant">
+                    ID: #{{ cinema.id }}
+                  </p>
+                </div>
+              </div>
+            </td>
+
+            <td class="px-md py-sm">
+              <span class="px-xs py-[2px] rounded-full bg-secondary-container/40 text-primary text-[11px] font-bold">
+                {{ cinema.city }}
+              </span>
+            </td>
+
+            <td class="px-md py-sm text-sm text-on-surface-variant max-w-sm">
+              {{ cinema.address }}
+            </td>
+
+            <td class="px-md py-sm font-bold text-primary">
+              {{ cinema.rooms.count }} phòng
+            </td>
+
+            <td class="px-md py-sm text-right">
+              <div class="flex items-center justify-end gap-xs">
+
+                <a
+                  href="/admin/cinema/cinema/{{ cinema.id }}/change/"
+                  class="p-xs hover:bg-primary-container/20 text-primary rounded-lg transition-colors"
+                  title="Edit"
+                >
+                  <span class="material-symbols-outlined">edit</span>
+                </a>
+
+                <a
+                  href="/admin/cinema/cinema/{{ cinema.id }}/delete/"
+                  class="p-xs hover:bg-red-100 text-red-600 rounded-lg transition-colors"
+                  title="Delete"
+                >
+                  <span class="material-symbols-outlined">delete</span>
+                </a>
+
+              </div>
+            </td>
+
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="5" class="px-md py-xl text-center">
+              <span class="material-symbols-outlined text-primary text-5xl mb-sm">
+                theaters
+              </span>
+
+              <p class="font-bold text-on-surface">
+                No cinemas found
+              </p>
+
+              <p class="text-on-surface-variant mb-md">
+                Không có rạp nào phù hợp với bộ lọc.
+              </p>
+
+              <a
+                href="/admin/cinema/cinema/add/"
+                class="inline-flex items-center gap-xs bg-primary text-on-primary px-lg py-sm rounded-xl font-bold"
+              >
+                <span class="material-symbols-outlined">add</span>
+                Add Cinema
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+
+    </table>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Chọn ghế | CineFlow{% endblock %}
+
+{% block content %}
+<main class="max-w-container-max mx-auto px-gutter py-xl">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-xl">
+
+    <!-- Left Side: Seat Map -->
+    <div class="lg:col-span-8 flex flex-col items-center">
+
+      <!-- Hold Notice -->
+      <div class="w-full mb-lg flex justify-center">
+        <div class="bg-error-container text-on-error-container px-lg py-sm rounded-full flex items-center gap-xs font-button">
+          <span class="material-symbols-outlined text-[20px]">timer</span>
+          <span>Ghế sẽ được giữ trong 5 phút sau khi bạn tạo booking</span>
+        </div>
+      </div>
+
+      <!-- Screen Area -->
+      <div class="w-full max-w-[600px] mb-xl flex flex-col items-center">
+        <div class="screen-curve mb-xs"></div>
+        <span class="text-outline text-label-caps uppercase tracking-widest">
+          SCREEN
+        </span>
+      </div>
+
+      <!-- Seat Rows -->
+      <div class="w-full overflow-x-auto pb-md mb-xl">
+        <div class="min-w-[640px] space-y-sm">
+
+          {% regroup seats by row as seat_rows %}
+
+          {% for row_group in seat_rows %}
+            <div class="flex items-center justify-center gap-sm">
+
+              <!-- Left row label -->
+              <div class="w-8 text-center font-bold text-primary">
+                {{ row_group.grouper }}
+              </div>
+
+              <!-- Seats -->
+              <div class="flex gap-2 justify-center">
+                {% for seat in row_group.list %}
+
+                  {% if seat.id in locked_seat_ids %}
+                    <!-- Ghế đã bị khóa: paid hoặc pending chưa hết hạn -->
+                    <button
+                      type="button"
+                      class="w-10 h-10 rounded-lg bg-[#0369A1] text-white text-[11px] font-bold cursor-not-allowed opacity-90"
+                      disabled
+                      title="Ghế đã được đặt hoặc đang được giữ"
+                      data-seat-id="{{ seat.id }}"
+                      data-seat-name="{{ seat.row }}{{ seat.number }}"
+                    >
+                      {{ seat.number }}
+                    </button>
+
+                  {% else %}
+                    <!-- Ghế trống -->
+                    <button
+                      type="button"
+                      class="available-seat w-10 h-10 rounded-lg border-2 border-sky-400 bg-white text-sky-600 text-[11px] font-bold hover:bg-sky-400 hover:text-white transition-all"
+                      data-seat-id="{{ seat.id }}"
+                      data-seat-name="{{ seat.row }}{{ seat.number }}"
+                      data-price="{{ showtime.price|floatformat:0 }}"
+                    >
+                      {{ seat.number }}
+                    </button>
+                  {% endif %}
+
+                {% endfor %}
+              </div>
+
+              <!-- Right row label -->
+              <div class="w-8 text-center font-bold text-primary">
+                {{ row_group.grouper }}
+              </div>
+
+            </div>
+          {% empty %}
+            <p class="text-on-surface-variant text-center">
+              Phòng chiếu này chưa có ghế.
+            </p>
+          {% endfor %}
+
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div class="flex flex-wrap justify-center gap-lg py-md border-t border-outline-variant w-full">
+        <div class="flex items-center gap-xs">
+          <div class="w-5 h-5 rounded border-2 border-sky-400 bg-white"></div>
+          <span class="text-body-sm text-on-surface-variant">Ghế trống</span>
+        </div>
+
+        <div class="flex items-center gap-xs">
+          <div class="w-5 h-5 rounded bg-primary-container"></div>
+          <span class="text-body-sm text-on-surface-variant">Đang chọn</span>
+        </div>
+
+        <div class="flex items-center gap-xs">
+          <div class="w-5 h-5 rounded bg-[#0369A1]"></div>
+          <span class="text-body-sm text-on-surface-variant">Đã đặt / đang giữ</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Side: Sidebar Summary -->
+    <aside class="lg:col-span-4">
+      <div class="bg-surface-container-lowest rounded-2xl p-lg shadow-sm sticky top-24 border border-outline-variant/30">
+
+        <div class="flex gap-md mb-lg">
+          <div class="w-24 h-36 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
+            {% if showtime.movie.poster %}
+              <img
+                class="w-full h-full object-cover"
+                src="{{ showtime.movie.poster.url }}"
+                alt="{{ showtime.movie.title }}"
+              />
+            {% else %}
+              <div class="w-full h-full bg-surface-container-high flex items-center justify-center">
+                <span class="material-symbols-outlined text-primary">movie</span>
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="flex flex-col justify-center">
+            <span class="bg-tertiary-fixed text-on-tertiary-fixed text-[10px] font-bold px-2 py-1 rounded-full uppercase w-fit mb-xs">
+              {{ showtime.room.get_room_type_display }}
+            </span>
+
+            <h2 class="font-h3 text-h3 text-on-surface leading-tight mb-xs">
+              {{ showtime.movie.title }}
+            </h2>
+
+            <p class="text-on-surface-variant text-body-sm">
+              {{ showtime.movie.genre }} • {{ showtime.movie.duration }} phút
+            </p>
+          </div>
+        </div>
+
+        <div class="space-y-md border-t border-outline-variant pt-md mb-lg">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-xs text-on-surface-variant">
+              <span class="material-symbols-outlined text-[20px]">location_on</span>
+              <span class="text-body-md">{{ showtime.room.cinema.name }}</span>
+            </div>
+
+            <span class="text-body-sm font-bold text-primary">
+              {{ showtime.room.name }}
+            </span>
+          </div>
+
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-xs text-on-surface-variant">
+              <span class="material-symbols-outlined text-[20px]">calendar_today</span>
+              <span class="text-body-md">{{ showtime.start_time|date:"d/m/Y" }}</span>
+            </div>
+
+            <span class="text-body-sm font-bold text-primary">
+              {{ showtime.start_time|date:"H:i" }}
+            </span>
+          </div>
+
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-xs text-on-surface-variant">
+              <span class="material-symbols-outlined text-[20px]">payments</span>
+              <span class="text-body-md">Giá vé</span>
+            </div>
+
+            <span class="text-body-sm font-bold text-primary">
+              {{ showtime.price|floatformat:0 }}đ
+            </span>
+          </div>
+        </div>
+
+        <div class="space-y-sm mb-xl">
+          <h4 class="font-button text-on-surface">Ghế đã chọn</h4>
+          <div id="selected-seats" class="flex flex-wrap gap-xs"></div>
+        </div>
+
+        <div class="bg-surface-container-low rounded-xl p-md mb-xl">
+          <div class="flex justify-between items-center mb-xs">
+            <span class="text-on-surface-variant text-body-sm">Giá vé</span>
+            <span id="ticket-price" class="text-on-surface font-body-md font-bold">
+              0đ x 0
+            </span>
+          </div>
+
+          <div class="flex justify-between items-center mb-xs">
+            <span class="text-on-surface-variant text-body-sm">Phí dịch vụ</span>
+            <span class="text-on-surface font-body-md font-bold">0đ</span>
+          </div>
+
+          <div class="flex justify-between items-center pt-sm border-t border-outline-variant mt-sm">
+            <span class="font-h3 text-on-surface">Tổng tiền</span>
+            <span id="total-price" class="font-h3 text-primary font-extrabold">
+              0đ
+            </span>
+          </div>
+        </div>
+
+        <form method="post" action="{% url 'cinema:create_booking' showtime.id %}">
+          {% csrf_token %}
+
+          <input type="hidden" name="seat_ids" id="selected-seat-ids" />
+
+          <button
+            type="submit"
+            class="w-full bg-primary text-on-primary font-h3 py-md rounded-2xl shadow-md hover:opacity-95 hover:shadow-lg transition-all active:scale-95 flex items-center justify-center gap-sm"
+          >
+            Tiếp tục thanh toán
+            <span class="material-symbols-outlined">arrow_forward</span>
+          </button>
+        </form>
+
+      </div>
+    </aside>
+  </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/seat_selection.js' %}?v=4"></script>
+{% endblock %}

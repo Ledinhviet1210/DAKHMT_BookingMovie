@@ -1,0 +1,89 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Danh sách rạp |
+CineFlow{% endblock %} {% block content %}
+<main class="max-w-container-max mx-auto px-gutter py-xl">
+  <div class="mb-xl">
+    <h1 class="font-h1 text-h1 text-on-surface mb-xs">Hệ thống rạp</h1>
+    <p class="text-body-lg text-on-surface-variant">
+      Chọn rạp phim gần bạn và xem các phòng chiếu hiện có.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+    {% for cinema in cinemas %}
+    <div
+      class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-outline-variant/30 hover:shadow-md transition-all"
+    >
+      <div class="h-48 bg-surface-container-high overflow-hidden">
+        {% if cinema.image %}
+        <img
+          src="{{ cinema.image.url }}"
+          alt="{{ cinema.name }}"
+          class="w-full h-full object-cover"
+        />
+        {% else %}
+        <div
+          class="w-full h-full flex items-center justify-center bg-primary-container/20"
+        >
+          <span class="material-symbols-outlined text-primary text-6xl">
+            theaters
+          </span>
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="p-lg">
+        <div class="flex items-start justify-between gap-md mb-md">
+          <div>
+            <h2 class="font-h3 text-h3 text-on-surface">{{ cinema.name }}</h2>
+            <p
+              class="text-body-sm text-on-surface-variant mt-xs flex items-center gap-xs"
+            >
+              <span class="material-symbols-outlined text-[16px]"
+                >location_on</span
+              >
+              {{ cinema.city }}
+            </p>
+          </div>
+
+          <span
+            class="px-sm py-1 rounded-full bg-primary-container/20 text-primary text-[12px] font-bold"
+          >
+            {{ cinema.rooms.count }} phòng
+          </span>
+        </div>
+
+        <p class="text-body-sm text-on-surface-variant mb-md">
+          {{ cinema.address }}
+        </p>
+
+        <div class="space-y-xs mb-lg">
+          {% for room in cinema.rooms.all %}
+          <div
+            class="flex items-center justify-between bg-surface-container-low rounded-lg px-sm py-xs"
+          >
+            <span class="font-bold text-on-surface"> {{ room.name }} </span>
+            <span class="text-[12px] text-on-surface-variant">
+              {{ room.get_room_type_display }} • {{ room.seats.count }} ghế
+            </span>
+          </div>
+          {% empty %}
+          <p class="text-body-sm text-on-surface-variant">
+            Chưa có phòng chiếu.
+          </p>
+          {% endfor %}
+        </div>
+
+        <a
+          href="{% url 'cinema:showtime_list' %}"
+          class="block text-center w-full bg-primary text-on-primary py-sm rounded-xl font-button text-button hover:opacity-90 transition-all"
+        >
+          Xem lịch chiếu
+        </a>
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-on-surface-variant">Chưa có rạp nào trong hệ thống.</p>
+    {% endfor %}
+  </div>
+</main>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% load static %}
+<header
+  class="bg-surface-container-lowest dark:bg-inverse-surface shadow-sm sticky top-0 z-50"
+>
+  <nav
+    class="max-w-container-max mx-auto px-gutter flex justify-between items-center h-20"
+  >
+    <div class="flex items-center gap-xl">
+      <a
+        href="{% url 'cinema:home' %}"
+        class="font-h3 text-h3 font-extrabold text-primary dark:text-primary-fixed-dim"
+        >CineFlow</a
+      >
+      <div class="hidden md:flex items-center gap-md">
+        <a
+          class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200"
+          href="{% url 'cinema:home' %}"
+          >Home</a
+        >
+        <a
+          class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200"
+          href="{% url 'cinema:movie_list' %}"
+          >Movies</a
+        >
+        <a
+          class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200"
+          href="{% url 'cinema:cinema_list' %}"
+          >Cinemas</a
+        >
+        <a
+          class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200"
+          href="{% url 'cinema:showtime_list' %}"
+          >Showtimes</a
+        >
+        <a
+          class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200"
+          href="{% url 'cinema:my_tickets' %}"
+          >My Tickets</a
+        >
+        {% if request.user.is_staff %}
+          <a
+            href="{% url 'cinema:staff_checkin' %}"
+            class="px-md py-sm font-button text-button text-primary hover:bg-surface-container-high rounded-xl transition-all"
+          >
+            Staff Check-in
+          </a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="flex items-center gap-sm">
+      {% if request.user.is_authenticated %}
+
+      <span class="font-bold text-primary"> {{ request.user.username }} </span>
+
+      <a
+        href="{% url 'cinema:logout' %}"
+        class="px-md py-sm font-button text-button bg-primary text-on-primary rounded-xl"
+      >
+        Logout
+      </a>
+
+      {% else %}
+
+      <a
+        href="{% url 'cinema:login' %}"
+        class="px-md py-sm font-button text-button text-primary hover:bg-surface-container-high rounded-xl transition-all"
+      >
+        Login
+      </a>
+
+      <a
+        href="{% url 'cinema:register' %}"
+        class="px-md py-sm font-button text-button bg-primary text-on-primary rounded-xl"
+      >
+        Register
+      </a>
+
+      {% endif %}
+    </div>
+  </nav>
+</header>

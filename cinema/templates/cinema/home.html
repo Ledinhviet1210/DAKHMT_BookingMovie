@@ -1,0 +1,195 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Home | CineFlow
+{%endblock %} {% block content %}
+<main>
+  <!-- Hero Section -->
+  <section class="relative h-[600px] overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <img
+        class="w-full h-full object-cover"
+        data-alt="A cinematic, wide-angle landscape of a distant celestial event with swirling cosmic dust and vibrant nebulae in shades of deep blue and gold. The lighting is dramatic and epic, evoking the scale of space exploration. The overall aesthetic is professional, high-fidelity, and captures the intense wonder of a modern science fiction masterpiece."
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJr8aOV3Ffg5yrg1_p5sEiCjnT8hS4h6nZBIqC4ANKIIoa-YjBJ_-tywZ9W00Y4oNO-TUhCa4wT1eCvDJXKvvZMbn8ySmfulcodroKYEUQ6R9fQbu_V-w3X5LWKTjMP99eL5XgnopX3bv1rfgGFTVkdW6IqUmuUFUAkPxt5mmxf8XfbNme3_CQlgA1dj304vPARj5Uthe4zSXxPJFpKmSJjQn6osPlaUFEX4cpqMyIg_F3UiKxc8vXBUSZhtMm7Sq6Kx2OT5Qsd9gu"
+      />
+    </div>
+    <div class="absolute inset-0 z-10 hero-gradient"></div>
+    <div
+      class="relative z-20 max-w-container-max mx-auto px-gutter h-full flex flex-col justify-center items-start text-white"
+    >
+      <span
+        class="bg-primary-container text-on-primary-container px-md py-xs rounded-full font-label-caps text-label-caps mb-md"
+        >RE-RELEASE SPECIAL</span
+      >
+      <h1 class="font-h1 text-h1 max-w-2xl mb-md">Interstellar: Re-release</h1>
+      <p class="font-body-lg text-body-lg max-w-xl mb-lg text-surface-variant">
+        Experience Christopher Nolan's space odyssey on the biggest screen. A
+        journey beyond time and space, now restored for the ultimate cinematic
+        experience.
+      </p>
+      <div class="flex gap-md">
+        <button
+          class="px-xl py-md bg-primary-container text-on-primary-container font-button text-button rounded-xl hover:scale-105 transition-transform flex items-center gap-xs"
+        >
+          <span
+            class="material-symbols-outlined"
+            style="font-variation-settings: &quot;FILL&quot; 1"
+            >confirmation_number</span
+          >
+          Book Now
+        </button>
+        <button
+          class="px-xl py-md border border-white text-white font-button text-button rounded-xl hover:bg-white/10 transition-all"
+        >
+          Watch Trailer
+        </button>
+      </div>
+    </div>
+  </section>
+  <!-- Now Showing -->
+  <section class="py-xl bg-background">
+    <div class="max-w-container-max mx-auto px-gutter">
+      <div class="flex justify-between items-end mb-lg">
+        <div>
+          <h2 class="font-h2 text-h2 text-on-surface">Now Showing</h2>
+
+          <p class="font-body-md text-body-md text-on-surface-variant">
+            Book your next cinematic experience
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+        {% for movie in now_showing_movies %}
+
+        <div
+          class="group relative bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all"
+        >
+          <div class="relative aspect-[2/3] overflow-hidden">
+            {% if movie.poster %}
+            <img
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              src="{{ movie.poster.url }}"
+              alt="{{ movie.title }}"
+            />
+            {% else %}
+            <div
+              class="w-full h-full bg-surface-container-high flex items-center justify-center"
+            >
+              <span class="material-symbols-outlined text-primary text-5xl">
+                movie
+              </span>
+            </div>
+            {% endif %}
+
+            <div
+              class="absolute top-sm right-sm bg-black/60 text-white px-xs py-1 rounded-lg backdrop-blur-md flex items-center gap-1 font-label-caps text-label-caps"
+            >
+              <span class="material-symbols-outlined text-sm">star</span>
+              {{ movie.rating }}
+            </div>
+          </div>
+
+          <div class="p-md">
+            <h3 class="font-h3 text-body-lg font-bold mb-xs truncate">
+              {{ movie.title }}
+            </h3>
+
+            <div class="flex gap-xs mb-md">
+              <span
+                class="bg-surface-container-high text-on-surface-variant px-xs py-0.5 rounded-full font-label-caps text-[10px]"
+              >
+                {{ movie.genre }}
+              </span>
+            </div>
+
+            <a
+              href="{% url 'cinema:movie_detail' movie.id %}"
+              class="block text-center w-full py-sm bg-secondary-container text-on-secondary-container font-button text-button rounded-xl hover:bg-primary hover:text-on-primary transition-all"
+            >
+              Book Now
+            </a>
+          </div>
+        </div>
+
+        {% empty %}
+
+        <p class="text-on-surface-variant">No movies now showing.</p>
+
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  <!-- Coming Soon -->
+  <section class="py-xl bg-surface-container-low">
+    <div class="max-w-container-max mx-auto px-gutter">
+      <div class="flex justify-between items-end mb-lg">
+        <div>
+          <h2 class="font-h2 text-h2 text-on-surface">Coming Soon</h2>
+          <p class="font-body-md text-body-md text-on-surface-variant">
+            Mark your calendars
+          </p>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-md">
+        {% for movie in coming_soon_movies %}
+        <div class="group cursor-pointer">
+          <div
+            class="relative aspect-[3/4] rounded-xl overflow-hidden mb-sm shadow-sm"
+          >
+            {% if movie.poster %}
+            <img
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              src="{{ movie.poster.url }}"
+              alt="{{ movie.title }}"
+            />
+            {% else %}
+            <div
+              class="w-full h-full bg-surface-container-high flex items-center justify-center"
+            >
+              <span class="material-symbols-outlined text-primary text-4xl"
+                >movie</span
+              >
+            </div>
+            {% endif %}
+          </div>
+
+          <h4 class="font-button text-body-sm text-on-surface truncate">
+            {{ movie.title }}
+          </h4>
+
+          <p class="font-body-sm text-[12px] text-on-surface-variant">
+            {{ movie.genre }}
+          </p>
+        </div>
+        {% empty %}
+        <p class="text-on-surface-variant">Chưa có phim sắp chiếu.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  <!-- Newsletter / CTA -->
+  <section class="py-xl bg-primary text-on-primary">
+    <div
+      class="max-w-container-max mx-auto px-gutter flex flex-col md:flex-row items-center justify-between gap-lg"
+    >
+      <div class="max-w-xl">
+        <h2 class="font-h2 text-h2 mb-xs">Don't miss a premiere</h2>
+        <p class="font-body-lg text-body-lg opacity-90">
+          Join our newsletter and get early access to ticket sales and exclusive
+          screenings.
+        </p>
+      </div>
+      <div class="flex w-full md:w-auto gap-sm">
+        <input
+          class="px-md py-sm rounded-xl border-none text-on-surface w-full md:w-80 focus:ring-2 focus:ring-primary-container"
+          placeholder="Your email address"
+          type="email"
+        />
+        <button
+          class="bg-white text-primary px-xl py-sm rounded-xl font-button text-button hover:bg-primary-fixed transition-colors"
+        >
+          Join Now
+        </button>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

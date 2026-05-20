@@ -1,0 +1,236 @@
+{% extends 'cinema/manage/base_manage.html' %}
+
+{% block title %}Movie Management | CineFlow{% endblock %}
+
+{% block manage_content %}
+
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md mb-xl">
+  <div>
+    <h2 class="text-4xl font-bold text-on-surface">
+      Movie Management
+    </h2>
+
+    <p class="text-on-surface-variant">
+      Create, update and manage now showing and coming soon movies.
+    </p>
+  </div>
+
+  <a
+    href="/admin/cinema/movie/add/"
+    class="flex items-center justify-center gap-xs bg-primary text-on-primary px-lg py-sm rounded-xl font-bold hover:shadow-md transition-all active:scale-95"
+  >
+    <span class="material-symbols-outlined">add</span>
+    Add Movie
+  </a>
+</div>
+
+<!-- Filter Bar -->
+<div class="bg-surface-container-lowest rounded-2xl shadow-sm p-md mb-lg border border-outline-variant/30">
+  <form method="get" class="grid grid-cols-1 md:grid-cols-4 gap-md">
+
+    <div class="space-y-xs">
+      <label class="text-xs font-bold text-on-surface-variant block">
+        SEARCH MOVIE
+      </label>
+
+      <div class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-sm">
+        <span class="material-symbols-outlined text-outline">search</span>
+
+        <input
+          class="bg-transparent border-none focus:ring-0 text-sm w-full py-2"
+          placeholder="Title..."
+          type="text"
+          name="q"
+          value="{{ search_query }}"
+        />
+      </div>
+    </div>
+
+    <div class="space-y-xs">
+      <label class="text-xs font-bold text-on-surface-variant block">
+        STATUS
+      </label>
+
+      <select
+        name="status"
+        class="w-full bg-surface-container-low border border-outline-variant rounded-xl py-2 px-sm text-sm focus:ring-primary focus:border-primary"
+      >
+        <option value="">All Status</option>
+        <option value="now_showing" {% if selected_status == "now_showing" %}selected{% endif %}>
+          Now Showing
+        </option>
+        <option value="coming_soon" {% if selected_status == "coming_soon" %}selected{% endif %}>
+          Coming Soon
+        </option>
+      </select>
+    </div>
+
+    <div class="space-y-xs">
+      <label class="text-xs font-bold text-on-surface-variant block">
+        GENRE
+      </label>
+
+      <select
+        name="genre"
+        class="w-full bg-surface-container-low border border-outline-variant rounded-xl py-2 px-sm text-sm focus:ring-primary focus:border-primary"
+      >
+        <option value="">All Genres</option>
+
+        {% for item in genres %}
+          <option value="{{ item }}" {% if selected_genre == item %}selected{% endif %}>
+            {{ item }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="flex items-end">
+      <button
+        type="submit"
+        class="w-full bg-secondary-container text-primary py-[10px] rounded-xl font-bold hover:bg-primary-container transition-colors"
+      >
+        Apply Filter
+      </button>
+    </div>
+
+  </form>
+</div>
+
+<!-- Movie Table -->
+<div class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/30 overflow-hidden">
+
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse">
+
+      <thead>
+        <tr class="bg-surface-container-low border-b border-outline-variant">
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant">POSTER</th>
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant">TITLE</th>
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant">GENRE</th>
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant">DURATION</th>
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant">STATUS</th>
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant">RELEASE DATE</th>
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant text-right">ACTIONS</th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y divide-outline-variant/30">
+        {% for movie in movies %}
+          <tr class="hover:bg-surface-container-low transition-colors duration-150">
+
+            <td class="px-md py-sm">
+              <div class="w-14 h-20 rounded-lg overflow-hidden shadow-sm bg-surface-container-high movie-card-hover">
+                {% if movie.poster %}
+                  <img
+                    src="{{ movie.poster.url }}"
+                    alt="{{ movie.title }}"
+                    class="w-full h-full object-cover transition-transform duration-300"
+                  />
+                {% else %}
+                  <div class="w-full h-full flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary">movie</span>
+                  </div>
+                {% endif %}
+              </div>
+            </td>
+
+            <td class="px-md py-sm text-base font-bold text-on-surface">
+              {{ movie.title }}
+            </td>
+
+            <td class="px-md py-sm">
+              <span class="px-xs py-[2px] rounded-full bg-secondary-container/40 text-primary text-[11px] font-bold">
+                {{ movie.genre }}
+              </span>
+            </td>
+
+            <td class="px-md py-sm text-sm text-on-surface-variant">
+              {{ movie.duration }} mins
+            </td>
+
+            <td class="px-md py-sm">
+              {% if movie.status == "now_showing" %}
+                <span class="inline-flex items-center gap-xs px-sm py-1 rounded-full bg-emerald-100 text-emerald-700 text-[12px] font-bold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  Now Showing
+                </span>
+              {% elif movie.status == "coming_soon" %}
+                <span class="inline-flex items-center gap-xs px-sm py-1 rounded-full bg-sky-100 text-sky-700 text-[12px] font-bold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
+                  Coming Soon
+                </span>
+              {% else %}
+                <span class="inline-flex items-center gap-xs px-sm py-1 rounded-full bg-gray-100 text-gray-700 text-[12px] font-bold">
+                  {{ movie.status }}
+                </span>
+              {% endif %}
+            </td>
+
+            <td class="px-md py-sm text-sm text-on-surface-variant">
+              {{ movie.release_date|date:"d/m/Y" }}
+            </td>
+
+            <td class="px-md py-sm text-right">
+              <div class="flex items-center justify-end gap-xs">
+
+                <a
+                  href="{% url 'cinema:movie_detail' movie.id %}"
+                  class="p-xs hover:bg-primary-container/20 text-primary rounded-lg transition-colors"
+                  title="View"
+                >
+                  <span class="material-symbols-outlined">visibility</span>
+                </a>
+
+                <a
+                  href="/admin/cinema/movie/{{ movie.id }}/change/"
+                  class="p-xs hover:bg-primary-container/20 text-primary rounded-lg transition-colors"
+                  title="Edit"
+                >
+                  <span class="material-symbols-outlined">edit</span>
+                </a>
+
+                <a
+                  href="/admin/cinema/movie/{{ movie.id }}/delete/"
+                  class="p-xs hover:bg-red-100 text-red-600 rounded-lg transition-colors"
+                  title="Delete"
+                >
+                  <span class="material-symbols-outlined">delete</span>
+                </a>
+
+              </div>
+            </td>
+
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="7" class="px-md py-xl text-center">
+              <span class="material-symbols-outlined text-primary text-5xl mb-sm">
+                movie
+              </span>
+
+              <p class="font-bold text-on-surface">
+                No movies found
+              </p>
+
+              <p class="text-on-surface-variant mb-md">
+                Không có phim nào phù hợp với bộ lọc.
+              </p>
+
+              <a
+                href="/admin/cinema/movie/add/"
+                class="inline-flex items-center gap-xs bg-primary text-on-primary px-lg py-sm rounded-xl font-bold"
+              >
+                <span class="material-symbols-outlined">add</span>
+                Add your first movie
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+
+    </table>
+  </div>
+</div>
+
+{% endblock %}

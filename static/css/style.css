@@ -1,0 +1,99 @@
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+}
+
+.hero-gradient {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.4) 50%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.cinematic-gradient {
+  background: linear-gradient(
+    0deg,
+    rgba(25, 28, 30, 1) 0%,
+    rgba(25, 28, 30, 0.4) 50%,
+    rgba(25, 28, 30, 0) 100%
+  );
+}
+
+.movie-card:hover .movie-image {
+  transform: scale(1.05);
+}
+
+.ticket-cutout {
+  position: relative;
+}
+
+.ticket-cutout::before,
+.ticket-cutout::after {
+  content: "";
+  position: absolute;
+  left: -12px;
+  width: 24px;
+  height: 24px;
+  background-color: #f7f9fb;
+  border-radius: 50%;
+  z-index: 10;
+}
+
+.ticket-cutout::before {
+  top: -12px;
+}
+.ticket-cutout::after {
+  bottom: -12px;
+}
+
+.ticket-cutout-right::before,
+.ticket-cutout-right::after {
+  content: "";
+  position: absolute;
+  right: -12px;
+  width: 24px;
+  height: 24px;
+  background-color: #f7f9fb;
+  border-radius: 50%;
+  z-index: 10;
+}
+
+.ticket-cutout-right::before {
+  top: -12px;
+}
+.ticket-cutout-right::after {
+  bottom: -12px;
+}
+
+.scannable-texture {
+  background-image: radial-gradient(#bdc8d1 1px, transparent 1px);
+  background-size: 8px 8px;
+}
+
+.seat-grid {
+  display: grid;
+  grid-template-columns: repeat(14, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.screen-curve {
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #00668a 50%,
+    transparent 100%
+  );
+  filter: blur(2px);
+  border-radius: 50%;
+}

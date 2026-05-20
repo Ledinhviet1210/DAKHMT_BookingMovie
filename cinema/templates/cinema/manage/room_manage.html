@@ -1,0 +1,197 @@
+{% extends 'cinema/manage/base_manage.html' %}
+
+{% block title %}Room Management | CineFlow{% endblock %}
+
+{% block manage_content %}
+
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md mb-xl">
+  <div>
+    <h2 class="text-4xl font-bold text-on-surface">
+      Room Management
+    </h2>
+
+    <p class="text-on-surface-variant">
+      Quản lý phòng chiếu. Ghế được sinh tự động theo số hàng và số ghế mỗi hàng.
+    </p>
+  </div>
+
+  <a
+    href="/admin/cinema/room/add/"
+    class="flex items-center justify-center gap-xs bg-primary text-on-primary px-lg py-sm rounded-xl font-bold hover:shadow-md transition-all active:scale-95"
+  >
+    <span class="material-symbols-outlined">add</span>
+    Add Room
+  </a>
+</div>
+
+<div class="bg-surface-container-lowest rounded-2xl shadow-sm p-md mb-lg border border-outline-variant/30">
+  <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-md">
+
+    <div class="space-y-xs">
+      <label class="text-xs font-bold text-on-surface-variant block">
+        CINEMA
+      </label>
+
+      <select
+        name="cinema"
+        class="w-full bg-surface-container-low border border-outline-variant rounded-xl py-2 px-sm text-sm focus:ring-primary focus:border-primary"
+      >
+        <option value="">All Cinemas</option>
+
+        {% for cinema in cinemas %}
+          <option value="{{ cinema.id }}" {% if selected_cinema_id == cinema.id|stringformat:"s" %}selected{% endif %}>
+            {{ cinema.name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="space-y-xs">
+      <label class="text-xs font-bold text-on-surface-variant block">
+        ROOM TYPE
+      </label>
+
+      <select
+        name="room_type"
+        class="w-full bg-surface-container-low border border-outline-variant rounded-xl py-2 px-sm text-sm focus:ring-primary focus:border-primary"
+      >
+        <option value="">All Types</option>
+        <option value="standard" {% if selected_room_type == "standard" %}selected{% endif %}>Standard</option>
+        <option value="vip" {% if selected_room_type == "vip" %}selected{% endif %}>VIP</option>
+        <option value="imax" {% if selected_room_type == "imax" %}selected{% endif %}>IMAX</option>
+      </select>
+    </div>
+
+    <div class="flex items-end">
+      <button
+        type="submit"
+        class="w-full bg-secondary-container text-primary py-[10px] rounded-xl font-bold hover:bg-primary-container transition-colors"
+      >
+        Apply Filter
+      </button>
+    </div>
+
+  </form>
+</div>
+
+<div class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/30 overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse">
+
+      <thead>
+        <tr class="bg-surface-container-low border-b border-outline-variant">
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant">ROOM</th>
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant">CINEMA</th>
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant">TYPE</th>
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant">LAYOUT</th>
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant">SEATS</th>
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant text-right">ACTIONS</th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y divide-outline-variant/30">
+        {% for room in rooms %}
+          <tr class="hover:bg-surface-container-low transition-colors duration-150">
+
+            <td class="px-md py-sm">
+              <div class="flex items-center gap-sm">
+                <div class="w-11 h-11 rounded-xl bg-primary text-on-primary flex items-center justify-center">
+                  <span class="material-symbols-outlined">meeting_room</span>
+                </div>
+
+                <div>
+                  <p class="font-bold text-on-surface">
+                    {{ room.name }}
+                  </p>
+
+                  <p class="text-sm text-on-surface-variant">
+                    Room ID: #{{ room.id }}
+                  </p>
+                </div>
+              </div>
+            </td>
+
+            <td class="px-md py-sm text-sm text-on-surface-variant">
+              {{ room.cinema.name }}
+            </td>
+
+            <td class="px-md py-sm">
+              <span class="px-xs py-[2px] rounded-full bg-secondary-container/40 text-primary text-[11px] font-bold uppercase">
+                {{ room.room_type }}
+              </span>
+            </td>
+
+            <td class="px-md py-sm text-sm text-on-surface-variant">
+              {{ room.total_rows }} hàng × {{ room.seats_per_row }} ghế
+            </td>
+
+            <td class="px-md py-sm font-bold text-primary">
+              {{ room.seats.count }} ghế
+            </td>
+
+            <td class="px-md py-sm text-right">
+              <div class="flex items-center justify-end gap-xs">
+
+                <a
+                  href="/admin/cinema/room/{{ room.id }}/change/"
+                  class="p-xs hover:bg-primary-container/20 text-primary rounded-lg transition-colors"
+                  title="Edit"
+                >
+                  <span class="material-symbols-outlined">edit</span>
+                </a>
+
+                <a
+                  href="/admin/cinema/room/{{ room.id }}/delete/"
+                  class="p-xs hover:bg-red-100 text-red-600 rounded-lg transition-colors"
+                  title="Delete"
+                >
+                  <span class="material-symbols-outlined">delete</span>
+                </a>
+
+              </div>
+            </td>
+
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6" class="px-md py-xl text-center">
+              <span class="material-symbols-outlined text-primary text-5xl mb-sm">
+                meeting_room
+              </span>
+
+              <p class="font-bold text-on-surface">
+                No rooms found
+              </p>
+
+              <p class="text-on-surface-variant mb-md">
+                Không có phòng nào phù hợp với bộ lọc.
+              </p>
+
+              <a
+                href="/admin/cinema/room/add/"
+                class="inline-flex items-center gap-xs bg-primary text-on-primary px-lg py-sm rounded-xl font-bold"
+              >
+                <span class="material-symbols-outlined">add</span>
+                Add Room
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+
+    </table>
+  </div>
+</div>
+
+<div class="mt-lg bg-surface-container-lowest rounded-2xl p-md border border-outline-variant/30">
+  <div class="flex items-start gap-sm">
+    <span class="material-symbols-outlined text-primary">info</span>
+
+    <p class="text-sm text-on-surface-variant">
+      Ghế không được quản lý trực tiếp tại menu riêng. Khi tạo phòng mới, hệ thống tự sinh ghế dựa trên
+      <strong>total_rows</strong> và <strong>seats_per_row</strong>. Sau khi đã sinh ghế, không nên sửa cấu trúc phòng để tránh sai lệch booking.
+    </p>
+  </div>
+</div>
+
+{% endblock %}

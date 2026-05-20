@@ -1,0 +1,224 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Thanh toán |
+CineFlow{% endblock %} {% block content %}
+<main class="max-w-container-max mx-auto px-gutter py-xl">
+  <div class="mb-xl">
+    <h1 class="font-h1 text-h1 text-on-surface mb-xs">Thanh toán</h1>
+    <div
+      class="mt-md inline-flex items-center gap-xs bg-error-container text-on-error-container px-lg py-sm rounded-full font-bold"
+    >
+      <span class="material-symbols-outlined text-[20px]">timer</span>
+
+      <span> Thời gian giữ ghế: </span>
+
+      <span
+        id="payment-countdown"
+        data-expire-time="{{ booking.hold_expires_at|date:'c' }}"
+      >
+        05:00
+      </span>
+    </div>
+    <p class="text-body-lg text-on-surface-variant">
+      Kiểm tra thông tin đặt vé và chọn phương thức thanh toán.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-xl">
+    <!-- Payment methods -->
+    <section class="lg:col-span-7">
+      <div
+        class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/30 p-xl"
+      >
+        <h2 class="font-h3 text-h3 mb-lg">Phương thức thanh toán</h2>
+
+        <div class="space-y-md">
+          <!-- VNPay Mock -->
+          <div
+            class="border-2 border-primary bg-primary-container/10 rounded-2xl p-lg"
+          >
+            <div class="flex items-start gap-md">
+              <div
+                class="w-14 h-14 rounded-xl bg-primary text-on-primary flex items-center justify-center"
+              >
+                <span class="material-symbols-outlined">payments</span>
+              </div>
+
+              <div class="flex-1">
+                <h3 class="font-h3 text-h3 text-on-surface">VNPay</h3>
+
+                <p class="text-body-sm text-on-surface-variant mt-xs">
+                  Thanh toán mô phỏng qua cổng VNPay. Dùng cho demo đồ án.
+                </p>
+
+                <div class="mt-md flex flex-wrap gap-xs">
+                  <span
+                    class="px-sm py-1 rounded-full bg-white text-primary text-[12px] font-bold"
+                  >
+                    ATM
+                  </span>
+                  <span
+                    class="px-sm py-1 rounded-full bg-white text-primary text-[12px] font-bold"
+                  >
+                    QR Pay
+                  </span>
+                  <span
+                    class="px-sm py-1 rounded-full bg-white text-primary text-[12px] font-bold"
+                  >
+                    Bank App
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cash -->
+          <div
+            class="border border-outline-variant/40 rounded-2xl p-lg opacity-70"
+          >
+            <div class="flex items-start gap-md">
+              <div
+                class="w-14 h-14 rounded-xl bg-surface-container-high text-primary flex items-center justify-center"
+              >
+                <span class="material-symbols-outlined">store</span>
+              </div>
+
+              <div>
+                <h3 class="font-h3 text-h3 text-on-surface">
+                  Thanh toán tại quầy
+                </h3>
+
+                <p class="text-body-sm text-on-surface-variant mt-xs">
+                  Có thể bổ sung sau. Hiện tại ưu tiên giả lập VNPay.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <form
+          method="post"
+          action="{% url 'cinema:vnpay_payment' booking.id %}"
+          class="mt-xl"
+        >
+          {% csrf_token %}
+
+          <button
+            type="submit"
+            class="w-full bg-primary text-on-primary py-md rounded-xl font-h3 shadow-md hover:opacity-90 transition-all"
+          >
+            Thanh toán qua VNPay
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Booking summary -->
+    <aside class="lg:col-span-5">
+      <div
+        class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/30 overflow-hidden sticky top-24"
+      >
+        <div class="p-lg border-b border-outline-variant/30">
+          <h2 class="font-h3 text-h3">Tóm tắt đặt vé</h2>
+        </div>
+
+        <div class="p-lg space-y-md">
+          <div>
+            <p class="text-body-sm text-on-surface-variant">Giữ ghế đến</p>
+
+            <p class="font-bold text-red-600">
+              {{ booking.hold_expires_at|date:"H:i:s" }} ngày 
+              {{ booking.hold_expires_at|date:"d/m/Y" }}
+            </p>
+          </div>
+          <div>
+            <p class="text-body-sm text-on-surface-variant">Mã booking</p>
+            <p class="font-bold text-primary">{{ booking.booking_code }}</p>
+          </div>
+
+          <div>
+            <p class="text-body-sm text-on-surface-variant">Phim</p>
+            <p class="font-bold">{{ booking.showtime.movie.title }}</p>
+          </div>
+
+          <div>
+            <p class="text-body-sm text-on-surface-variant">Rạp</p>
+            <p class="font-bold">{{ booking.showtime.room.cinema.name }}</p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-md">
+            <div>
+              <p class="text-body-sm text-on-surface-variant">Phòng</p>
+              <p class="font-bold">{{ booking.showtime.room.name }}</p>
+            </div>
+
+            <div>
+              <p class="text-body-sm text-on-surface-variant">Suất chiếu</p>
+              <p class="font-bold">
+                {{ booking.showtime.start_time|date:"d/m H:i" }}
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <p class="text-body-sm text-on-surface-variant">Ghế</p>
+
+            <div class="flex flex-wrap gap-xs mt-xs">
+              {% for item in booking.booking_seats.all %}
+              <span
+                class="px-sm py-1 rounded-lg bg-primary-container/20 text-primary font-bold"
+              >
+                {{ item.seat.row }}{{ item.seat.number }}
+              </span>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="pt-md border-t border-outline-variant/30">
+            <div class="flex justify-between items-center">
+              <span class="font-h3 text-h3"> Tổng tiền </span>
+
+              <span class="font-h3 text-h3 text-primary">
+                {{ booking.total_price|floatformat:0 }}đ
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</main>
+{% endblock %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const countdownEl = document.getElementById("payment-countdown");
+
+    if (!countdownEl) return;
+
+    const expireTime = new Date(countdownEl.dataset.expireTime).getTime();
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const distance = expireTime - now;
+
+      if (distance <= 0) {
+        countdownEl.textContent = "00:00";
+
+        alert("Hết thời gian giữ ghế. Vui lòng chọn ghế lại.");
+
+        window.location.href =
+          "{% url 'cinema:seat_selection' booking.showtime.id %}";
+        return;
+      }
+
+      const minutes = Math.floor(distance / 1000 / 60);
+      const seconds = Math.floor((distance / 1000) % 60);
+
+      countdownEl.textContent =
+        String(minutes).padStart(2, "0") +
+        ":" +
+        String(seconds).padStart(2, "0");
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  });
+</script>

@@ -1,0 +1,92 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Thanh toán thành
+công | CineFlow{% endblock %} {% block content %}
+<main class="max-w-4xl mx-auto px-gutter py-xl">
+  <div
+    class="bg-surface-container-lowest rounded-3xl shadow-sm border border-outline-variant/30 overflow-hidden"
+  >
+    <div class="bg-primary text-on-primary p-xl text-center">
+      <span class="material-symbols-outlined text-6xl mb-md">check_circle</span>
+      <h1 class="font-h2 text-h2">Thanh toán thành công</h1>
+      <p class="opacity-90 mt-xs">Vé điện tử của bạn đã được tạo.</p>
+    </div>
+
+    <div class="p-xl grid grid-cols-1 md:grid-cols-12 gap-xl">
+      <div class="md:col-span-8 space-y-md">
+        <h2 class="font-h3 text-h3">{{ booking.showtime.movie.title }}</h2>
+
+        <p><strong>Mã booking:</strong> {{ booking.booking_code }}</p>
+        <p><strong>Rạp:</strong> {{ booking.showtime.room.cinema.name }}</p>
+        <p><strong>Phòng:</strong> {{ booking.showtime.room.name }}</p>
+        <p>
+          <strong>Suất chiếu:</strong>
+          {{ booking.showtime.start_time|date:"d/m/Y H:i" }}
+        </p>
+
+        <div>
+          <strong>Ghế:</strong>
+          <div class="flex flex-wrap gap-xs mt-xs">
+            {% for item in booking.booking_seats.all %}
+            <span
+              class="px-sm py-1 rounded-lg bg-primary-container/20 text-primary font-bold"
+            >
+              {{ item.seat.row }}{{ item.seat.number }}
+            </span>
+            {% endfor %}
+          </div>
+        </div>
+
+        <p class="text-h3 font-bold text-primary">
+          Tổng tiền: {{ booking.total_price|floatformat:0 }}đ
+        </p>
+      </div>
+
+      <div class="md:col-span-4 flex flex-col items-center justify-center">
+        {% if booking.ticket.qr_code %}
+        <div
+          class="bg-white p-6 rounded-xl border border-outline-variant shadow-sm"
+        >
+          <img
+            src="{{ booking.ticket.qr_code.url }}"
+            alt="QR Ticket"
+            class="w-72 max-w-full h-auto object-contain"
+          />
+        </div>
+        {% else %}
+        <div
+          class="w-72 h-72 rounded-xl bg-surface-container-high flex items-center justify-center"
+        >
+          QR chưa được tạo
+        </div>
+        {% endif %}
+
+        <p class="text-body-sm text-on-surface-variant mt-sm text-center">
+          Đưa mã QR này cho nhân viên rạp để kiểm tra vé.
+        </p>
+      </div>
+    </div>
+
+    <div class="p-xl pt-0 flex flex-col sm:flex-row gap-md">
+      <a
+        href="{% url 'cinema:my_tickets' %}"
+        class="flex-1 text-center bg-primary text-on-primary py-md rounded-xl font-bold"
+      >
+        Xem vé của tôi
+      </a>
+
+      <a
+        href="{% url 'cinema:ticket_detail' booking.booking_code %}"
+        class="flex-1 text-center bg-primary-container text-on-primary-container py-md rounded-xl font-bold"
+      >
+        Mở vé điện tử
+      </a>
+
+      <a
+        href="{% url 'cinema:movie_list' %}"
+        class="flex-1 text-center border border-primary text-primary py-md rounded-xl font-bold"
+      >
+        Đặt thêm vé
+      </a>
+    </div>
+  </div>
+</main>
+{% endblock %}

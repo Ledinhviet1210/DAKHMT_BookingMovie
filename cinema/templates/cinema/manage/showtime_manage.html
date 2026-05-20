@@ -1,0 +1,130 @@
+{% extends 'cinema/manage/base_manage.html' %}
+
+{% block title %}Showtime Management | CineFlow{% endblock %}
+
+{% block manage_content %}
+
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md mb-xl">
+  <div>
+    <h2 class="text-4xl font-bold text-on-surface">
+      Showtime Management
+    </h2>
+    <p class="text-on-surface-variant">
+      Quản lý lịch chiếu theo phim, rạp và ngày chiếu.
+    </p>
+  </div>
+
+  <a
+    href="/admin/cinema/showtime/add/"
+    class="flex items-center justify-center gap-xs bg-primary text-on-primary px-lg py-sm rounded-xl font-bold hover:shadow-md transition-all"
+  >
+    <span class="material-symbols-outlined">add</span>
+    Add Showtime
+  </a>
+</div>
+
+<div class="bg-surface-container-lowest rounded-2xl shadow-sm p-md mb-lg border border-outline-variant/30">
+  <form method="get" class="grid grid-cols-1 md:grid-cols-4 gap-md">
+
+    <div class="space-y-xs">
+      <label class="text-xs font-bold text-on-surface-variant block">
+        MOVIE
+      </label>
+      <select name="movie" class="w-full bg-surface-container-low border border-outline-variant rounded-xl py-2 px-sm text-sm">
+        <option value="">All Movies</option>
+        {% for movie in movies %}
+          <option value="{{ movie.id }}" {% if selected_movie_id == movie.id|stringformat:"s" %}selected{% endif %}>
+            {{ movie.title }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="space-y-xs">
+      <label class="text-xs font-bold text-on-surface-variant block">
+        CINEMA
+      </label>
+      <select name="cinema" class="w-full bg-surface-container-low border border-outline-variant rounded-xl py-2 px-sm text-sm">
+        <option value="">All Cinemas</option>
+        {% for cinema in cinemas %}
+          <option value="{{ cinema.id }}" {% if selected_cinema_id == cinema.id|stringformat:"s" %}selected{% endif %}>
+            {{ cinema.name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="space-y-xs">
+      <label class="text-xs font-bold text-on-surface-variant block">
+        DATE
+      </label>
+      <input
+        type="date"
+        name="date"
+        value="{{ selected_date }}"
+        class="w-full bg-surface-container-low border border-outline-variant rounded-xl py-2 px-sm text-sm"
+      >
+    </div>
+
+    <div class="flex items-end">
+      <button type="submit" class="w-full bg-secondary-container text-primary py-[10px] rounded-xl font-bold">
+        Apply Filter
+      </button>
+    </div>
+
+  </form>
+</div>
+
+<div class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/30 overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="bg-surface-container-low border-b border-outline-variant">
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant">MOVIE</th>
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant">CINEMA</th>
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant">ROOM</th>
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant">START TIME</th>
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant">PRICE</th>
+          <th class="px-md py-sm text-xs font-bold text-on-surface-variant text-right">ACTIONS</th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y divide-outline-variant/30">
+        {% for showtime in showtimes %}
+          <tr class="hover:bg-surface-container-low transition-colors">
+            <td class="px-md py-sm font-bold">{{ showtime.movie.title }}</td>
+            <td class="px-md py-sm text-on-surface-variant">{{ showtime.room.cinema.name }}</td>
+            <td class="px-md py-sm text-on-surface-variant">{{ showtime.room.name }}</td>
+            <td class="px-md py-sm text-on-surface-variant">{{ showtime.start_time|date:"d/m/Y H:i" }}</td>
+            <td class="px-md py-sm font-bold text-primary">{{ showtime.price|floatformat:0 }}đ</td>
+
+            <td class="px-md py-sm text-right">
+              <div class="flex items-center justify-end gap-xs">
+                <a href="{% url 'cinema:seat_selection' showtime.id %}" class="p-xs hover:bg-primary-container/20 text-primary rounded-lg">
+                  <span class="material-symbols-outlined">visibility</span>
+                </a>
+
+                <a href="/admin/cinema/showtime/{{ showtime.id }}/change/" class="p-xs hover:bg-primary-container/20 text-primary rounded-lg">
+                  <span class="material-symbols-outlined">edit</span>
+                </a>
+
+                <a href="/admin/cinema/showtime/{{ showtime.id }}/delete/" class="p-xs hover:bg-red-100 text-red-600 rounded-lg">
+                  <span class="material-symbols-outlined">delete</span>
+                </a>
+              </div>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6" class="px-md py-xl text-center text-on-surface-variant">
+              Chưa có suất chiếu nào.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+
+    </table>
+  </div>
+</div>
+
+{% endblock %}

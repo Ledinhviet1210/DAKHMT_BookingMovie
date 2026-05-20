@@ -1,0 +1,98 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Đăng ký |
+CineFlow{% endblock %} {% block content %}
+<main
+  class="h-[calc(100vh-80px)] flex items-center justify-center px-gutter overflow-hidden"
+>
+  <div
+    class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-xl items-center"
+  >
+    <!-- LEFT -->
+    <div class="hidden lg:block lg:col-span-7">
+      <div class="relative rounded-3xl overflow-hidden shadow-2xl h-[620px]">
+        <img
+          src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1974&auto=format&fit=crop"
+          class="w-full h-full object-cover"
+        />
+
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-black/80 to-black/20"
+        ></div>
+
+        <div class="absolute bottom-0 left-0 p-xl text-white">
+          <h1 class="text-4xl font-black mb-sm leading-tight">
+            Unlock the Magic of Cinema
+          </h1>
+
+          <p class="text-base opacity-90 max-w-lg">
+            Join CineFlow today and experience premium movie booking with
+            seamless ticket management.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="lg:col-span-5">
+      <div
+        class="bg-surface-container-lowest rounded-3xl p-lg shadow-lg border border-outline-variant/20"
+      >
+        <div class="mb-lg">
+          <h2 class="font-h2 text-h2 text-primary mb-xs">Create Account</h2>
+
+          <p class="text-on-surface-variant">
+            Tạo tài khoản để bắt đầu đặt vé trên CineFlow.
+          </p>
+        </div>
+
+        <form method="post" class="space-y-sm">
+          {% csrf_token %} {{ form.non_field_errors }}
+
+          <div class="space-y-xs">
+            <label class="font-bold text-sm"> Username </label>
+
+            {{ form.username }}
+          </div>
+
+          <div class="space-y-xs">
+            <label class="font-bold text-sm"> Email </label>
+
+            {{ form.email }}
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+            <div class="space-y-xs">
+              <label class="font-bold text-sm"> Password </label>
+
+              {{ form.password1 }}
+            </div>
+
+            <div class="space-y-xs">
+              <label class="font-bold text-sm"> Confirm Password </label>
+
+              {{ form.password2 }}
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full bg-primary text-on-primary py-md rounded-xl font-bold hover:opacity-90 transition-all"
+          >
+            Create Account
+          </button>
+        </form>
+
+        <div class="mt-lg text-center text-sm text-on-surface-variant">
+          Đã có tài khoản?
+
+          <a
+            href="{% url 'cinema:login' %}"
+            class="text-primary font-bold hover:underline"
+          >
+            Đăng nhập
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}

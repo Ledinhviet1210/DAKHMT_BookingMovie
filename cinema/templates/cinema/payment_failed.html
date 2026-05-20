@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Thanh toán thất bại | CineFlow{% endblock %}
+
+{% block content %}
+<main class="max-w-3xl mx-auto px-gutter py-xl">
+  <div class="bg-surface-container-lowest rounded-3xl shadow-sm border border-outline-variant/30 overflow-hidden">
+
+    <div class="bg-red-600 text-white p-xl text-center">
+      <span class="material-symbols-outlined text-6xl mb-md">
+        cancel
+      </span>
+
+      <h1 class="font-h2 text-h2">
+        Thanh toán thất bại
+      </h1>
+
+      <p class="opacity-90 mt-xs">
+        Giao dịch VNPay mô phỏng không thành công.
+      </p>
+    </div>
+
+    <div class="p-xl space-y-md">
+      <p>
+        <strong>Mã booking:</strong>
+        {{ booking.booking_code }}
+      </p>
+
+      <p>
+        <strong>Phim:</strong>
+        {{ booking.showtime.movie.title }}
+      </p>
+
+      <p>
+        <strong>Trạng thái:</strong>
+        {{ booking.status }}
+      </p>
+
+      <p class="text-on-surface-variant">
+        Bạn có thể quay lại trang thanh toán để thử lại.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-md pt-md">
+        <a
+          href="{% url 'cinema:payment' booking.id %}"
+          class="flex-1 text-center bg-primary text-on-primary py-md rounded-xl font-bold"
+        >
+          Thanh toán lại
+        </a>
+
+        <a
+          href="{% url 'cinema:movie_list' %}"
+          class="flex-1 text-center border border-primary text-primary py-md rounded-xl font-bold"
+        >
+          Quay lại danh sách phim
+        </a>
+      </div>
+    </div>
+
+  </div>
+</main>
+{% endblock %}

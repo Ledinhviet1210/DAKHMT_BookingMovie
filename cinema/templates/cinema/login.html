@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Đăng nhập | CineFlow{% endblock %}
+
+{% block content %}
+<main class="h-[calc(100vh-80px)] flex items-center justify-center px-gutter overflow-hidden">
+  <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-xl items-center">
+
+    <!-- LEFT IMAGE -->
+    <div class="hidden lg:block lg:col-span-7">
+      <div class="relative rounded-3xl overflow-hidden shadow-2xl h-[620px]">
+        <img
+          src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?q=80&w=2070&auto=format&fit=crop"
+          class="w-full h-full object-cover"
+        >
+
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-black/20"></div>
+
+        <div class="absolute bottom-0 left-0 p-xl text-white">
+          <h1 class="text-4xl font-black mb-sm leading-tight">
+            Welcome Back to CineFlow
+          </h1>
+
+          <p class="text-base opacity-90 max-w-lg">
+            Đăng nhập để tiếp tục đặt vé, quản lý vé điện tử và trải nghiệm rạp phim yêu thích của bạn.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT FORM -->
+    <div class="lg:col-span-5">
+      <div class="bg-surface-container-lowest rounded-3xl p-lg shadow-lg border border-outline-variant/20">
+
+        <div class="mb-lg text-center">
+          <h2 class="font-h2 text-h2 text-primary mb-xs">
+            Đăng nhập
+          </h2>
+
+          <p class="text-on-surface-variant">
+            Chào mừng bạn quay lại CineFlow.
+          </p>
+        </div>
+
+        <form method="post" class="space-y-sm">
+          {% csrf_token %}
+
+          {{ form.non_field_errors }}
+
+          <div class="space-y-xs">
+            <label class="font-bold text-sm">
+              Username
+            </label>
+
+            {{ form.username }}
+          </div>
+
+          <div class="space-y-xs">
+            <label class="font-bold text-sm">
+              Password
+            </label>
+
+            {{ form.password }}
+          </div>
+
+          <button
+            type="submit"
+            class="w-full bg-primary text-on-primary py-md rounded-xl font-bold hover:opacity-90 transition-all mt-sm"
+          >
+            Đăng nhập
+          </button>
+        </form>
+
+        <div class="mt-lg text-center text-sm text-on-surface-variant">
+          Chưa có tài khoản?
+
+          <a
+            href="{% url 'cinema:register' %}"
+            class="text-primary font-bold hover:underline"
+          >
+            Đăng ký
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</main>
+{% endblock %}
